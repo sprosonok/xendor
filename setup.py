@@ -13,7 +13,7 @@ setup(
     name='xendor',
     version='8.0.0',
     description='Content Management System',
-    long_description = read('README.rst'),
+    long_description = read('README.md'),
     author='Potapov Pavel (tahy)',
     author_email='info@sociogenetics.ru',
     url = 'http://xendor.ru',
