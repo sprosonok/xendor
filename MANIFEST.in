@@ -1,4 +1,4 @@
-include README.rst
+include README.md
 include LICENSE
 recursive-include xendor/doc *
 recursive-include xendor/static *
