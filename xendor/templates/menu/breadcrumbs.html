@@ -1,0 +1,18 @@
+{% if path|length > 0 %}
+    <ul class="breadcrumb">
+        <li><a href="/">Главная</a> <span class="divider">/</span></li>
+
+        {% for item in path %}
+            {% if item.in_menu %}
+                <li>
+                    {% if not forloop.last %}
+                        <a href="{{ item.url }}">{{ item.title|safe }}</a>
+                    {% else %}
+                        <span>{{ item.title|safe }}</span>
+                    {% endif %}
+                    {% if not forloop.last %}<span class="divider">/</span>{% endif %}
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% endif %}

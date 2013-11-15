@@ -1,0 +1,18 @@
+{% load xendor_tags %}
+
+<ul>
+    {% for node in nodes %}
+    <li {% if node.active %}class="active"{% endif %}>
+
+        {% if node.current %}
+            <a href="{{ node.url }}">{{ node.title|safe }}</a>
+        {% else %}
+            <a href="{{ node.url }}">{{ node.title|safe }}</a>
+        {% endif %}
+
+        {% if node.children %}
+            {% level_menu node.children %}
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>

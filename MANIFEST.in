@@ -1,0 +1,6 @@
+include README.rst
+include LICENSE
+recursive-include xendor/doc *
+recursive-include xendor/static *
+recursive-include xendor/templates *
+recursive-include xendor/ptemplate *

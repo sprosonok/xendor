@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load xendor_tags %}
+
+{% block content %}
+    <div class="header-lead">
+        <hr>
+        <h2><span>{{ page.title }}</span></h2>
+        {% breadcrumbs %}
+        <br class="clear">
+    </div>
+
+    {{ page.content|safe }}
+    <div class="gap-20"></div>
+{% endblock %}

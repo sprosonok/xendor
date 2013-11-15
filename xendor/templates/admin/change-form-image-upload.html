@@ -1,0 +1,21 @@
+{% extends "admin/change_form.html" %}
+{% load i18n %}
+
+{% block object-tools %}
+    {% if change %}
+        {% if not is_popup %}
+            <ul class="object-tools nav-pills pull-right" style="list-style: none; margin-top: -30px;">
+                {% block object-tools-items %}
+                    <li><a href="upload/" class="btn"><i class="icon-picture"></i> Фотогалерея</a></li>
+
+                    <li><a href="history/" class="historylink btn" style="margin-left: 5px;">{% trans "History" %}</a></li>
+
+                    {% if has_absolute_url %}
+                        <li><a href="../../../r/{{ content_type_id }}/{{ object_id }}/" class="viewsitelink btn" style="margin-left: 5px;">{% trans "View on site" %}</a></li>
+                    {% endif%}
+                {% endblock %}
+            </ul>
+            <br class="clear"/>
+        {% endif %}
+    {% endif %}
+{% endblock %}

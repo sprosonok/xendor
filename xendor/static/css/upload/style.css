@@ -1,0 +1,8 @@
+body{
+    padding-top: 60px;
+    background: #dee1ed;
+}
+
+.preview img {
+    max-height: 200px;
+}

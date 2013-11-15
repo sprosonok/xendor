@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head profile="http://gmpg.org/xfn/11">
+		<title>Сайт в разработке</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	    <link href="/static/css/bootstrap.css" rel="stylesheet" type="text/css">
+	    <script src="/static/js/jquery-1.7.1.min.js" type="text/javascript"></script>
+	</head>
+
+	<body>
+		<div class="container">
+			<form action="/admin/" method="post">
+				{% csrf_token %}
+				<div class="modal-header">
+					<h1>Сайт в разработке</h1>
+				</div>
+				<div class="modal-body row">
+					<div class="col-4">
+		    			<a href="http://sociogenetics.ru" class="thumbnail">
+							<img src="/static/img/dev_big.png"/>
+						</a>
+					</div>
+					<div class="col-8">
+						<blockquote>
+							Совсем скоро здесь появится новый прекрасный сайт <span style="font-size: 18px;">{{site_name}}</span>
+						</blockquote>
+						<table style="margin-top: 20px; width: 100%; height: 100%">
+					    	<tr>
+					    		<td style="text-align: right; vertical-align: middle">
+					    			<label for="id_username" class="required">Имя:</label> 
+					    		</td>
+					    		<td style="padding: 3px; padding-left: 5px;">
+					    			<input id="id_username" type="text" name="username" maxlength="30"><br/>
+					    		</td>
+					    	</tr><tr>
+					    		<td style="text-align: right; vertical-align: middle">
+					    			<label for="id_password" class="required">Пароль:</label> 
+					    		</td>
+					    		<td style="padding: 3px; padding-left: 5px;">
+					    			<input type="password" name="password" id="id_password">
+								    <input type="hidden" name="this_is_the_login_form" value="1">
+								    <input type="hidden" name="next" value="/">
+					    		</td>
+					    	</tr>
+					    	<tr>
+					    		<td colspan="2" style="vertical-align: bottom; height: 100px;">
+					    			<input type="submit" value="Войти" class="btn btn-danger btn-large">
+					    		</td>
+					    	</tr>
+					    </table>
+				    </div>
+				</div>
+			</form>
+		</div>
+		
+		<style type="text/css" media="screen">
+			
+			body{
+				background: black;
+			}
+			
+			body *{
+				border-radius: 0 !important;
+				color: white;
+			}
+			
+			.container{
+				margin-top: 50px;
+			}
+			
+			a.thumbnail{
+				border-color: transparent;
+				border-width: 5px;
+			}
+
+			a.thumbnail img{
+				color: black;
+			}
+			
+			a.thumbnail:hover, a.thumbnail:focus {
+				border-color: #C13A2B;
+			}
+			
+			h1{
+				font-size: 72px;
+				font-weight: bold;
+			}
+			
+			.thumbnail{
+				padding: 0; margin: 0;
+			}
+			
+			input{
+				font-size: 24px;
+				width: 100%;
+				margin-bottom: 15px;
+				color: black;
+			}
+			
+			label{
+				font-size: 24px;
+				padding-right: 10px;
+			}
+			
+			form{
+				margin-bottom: 0;
+			}
+			
+			blockquote{
+				border-color: white;
+			}
+			
+			form{
+				max-width: 940px;
+			}
+			
+			.modal-footer {
+				border: none;
+			}
+			
+			.lenta{
+				/*height: 69px;
+				background: url('/static/img/under_constr.jpg') repeat-x;*/
+			}
+
+		</style>
+	</body>
+</html>
+
