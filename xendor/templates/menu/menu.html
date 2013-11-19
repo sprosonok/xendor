@@ -1,4 +1,4 @@
-{% load xdp_tags %}
+{% load xendor_tags %}
 
 <ul class="nav">
     {% for node in menu.nodes %}
@@ -11,7 +11,7 @@
         {% endif %}
 
         {% if node.children %}
-            {% xdp_level_menu node.children %}
+            {% level_menu node.children %}
         {% endif %}
     </li>
     {% endfor %}
