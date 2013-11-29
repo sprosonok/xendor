@@ -1,0 +1,9 @@
+virtualenv --system-site-packages ./python
+source ./python/bin/activate
+pip install --upgrade django==1.6
+pip install south
+pip install django-tinymce
+pip install git+https://github.com/tahy/django-filebrowser-no-grappelli.git#egg=django-filebrowser
+pip install git+https://github.com/sociogenetics/xendor.git#egg=xendor
+pip install git+https://github.com/sociogenetics/mpttadmin.git#egg=mpttadmin
+pip install django-mptt
