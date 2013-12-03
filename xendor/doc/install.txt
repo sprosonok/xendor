@@ -1,3 +1,4 @@
+pip install virtualenv
 virtualenv --system-site-packages ./python
 source ./python/bin/activate
 pip install --upgrade django==1.6
