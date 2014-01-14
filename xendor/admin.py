@@ -15,12 +15,12 @@ class PageAdmin(XDP17TreeModelAdmin):
             'fields': ('title', 'menu_title', 'content', 'in_menu'),
         }),
         ('Метаданные', {
-            'classes': ('collapse closed',),
+            'classes': ('grp-collapse grp-closed',),
             'description': 'Используются поисковиками для лучшей индексации страницы',
-            'fields' : ('meta_title', 'meta_description', 'meta_keywords'),
+            'fields': ('meta_title', 'meta_description', 'meta_keywords'),
         }),
         ('Настройки', {
-            'classes': ('collapse closed',),
+            'classes': ('grp-collapse grp-closed',),
             'description': 'Без четкой уверенности сюда лучше не лезть',
             'fields': ('slug', 'visible', 'parameters', 'template', 'app_extension', 'menu_url', 'is_main'),  # 'template',
         }),
@@ -34,6 +34,12 @@ class PageAdmin(XDP17TreeModelAdmin):
     list_filter = ('visible', )
 
     form = PageAdminForm
+
+    # class Media:
+    #     js = [
+    #         '/static/grappelli/tinymce/jscripts/tiny_mce/tiny_mce.js',
+    #         '/static/js/tinymce_setup.js',
+    #     ]
 
 
 class ChunkAdmin(admin.ModelAdmin):

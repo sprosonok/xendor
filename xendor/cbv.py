@@ -216,8 +216,11 @@ class SearchByModelMixin(ListView):
     search_get_parameter = 's'
 
     def get_queryset(self):
-        return super(SearchByModelMixin, self).get_queryset().filter(reduce(lambda f, s: f | s,
-            [Q(**{(f + '__icontains'): self.request.GET.get(self.search_get_parameter)}) for f in self.search_fields]))
+        if self.request.GET.get(self.search_get_parameter):
+            return super(SearchByModelMixin, self).get_queryset().filter(reduce(lambda f, s: f | s,
+                [Q(**{(f + '__icontains'): self.request.GET.get(self.search_get_parameter)}) for f in self.search_fields]))
+        else:
+            return super(SearchByModelMixin, self).get_queryset().none()
 
     def get_context_data(self, **kwargs):
         context = super(SearchByModelMixin, self).get_context_data(**kwargs)

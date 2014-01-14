@@ -1,10 +1,47 @@
 # -*- coding: utf-8 -*-
 import mptt
 from mptt.models import TreeForeignKey, MPTTModel
+import re
+from django.core.validators import RegexValidator
 from tinymce.models import HTMLField
 from django.db import models
+from django.core import exceptions, validators
+from django import forms
+from django.utils.translation import ugettext_lazy as _
 
 from xendor.utils import generate_slug
+
+slug_re = re.compile(r'^[-a-zA-Z0-9_/]+$')
+validate_slug = RegexValidator(slug_re, _("Enter a valid 'slug' consisting of letters, numbers, underscores or hyphens."), 'invalid')
+
+
+class XendorFormSlugField(forms.CharField):
+    default_validators = [validate_slug]
+
+    def clean(self, value):
+        value = self.to_python(value).strip()
+        return super(XendorFormSlugField, self).clean(value)
+
+
+class XendorSlugField(models.CharField):
+    default_validators = [validate_slug]
+    description = _("Slug (up to %(max_length)s)")
+
+    def __init__(self, *args, **kwargs):
+        kwargs['max_length'] = kwargs.get('max_length', 50)
+        # Set db_index=True unless it's been set manually.
+        if 'db_index' not in kwargs:
+            kwargs['db_index'] = True
+        super(XendorSlugField, self).__init__(*args, **kwargs)
+
+    def get_internal_type(self):
+        return "SlugField"
+
+    def formfield(self, **kwargs):
+        defaults = {'form_class': XendorFormSlugField}
+        defaults.update(kwargs)
+        return super(XendorSlugField, self).formfield(**defaults)
+
 
 class Page(MPTTModel):
 
@@ -18,7 +55,7 @@ class Page(MPTTModel):
     in_menu = models.BooleanField(default=True)
     is_main = models.BooleanField(default=False)
     app_extension = models.CharField(max_length=255, null=False, blank=True, default='')
-    slug = models.SlugField(u'Синоним страницы', max_length = 255, null=True, unique=True, blank = True)
+    slug = XendorSlugField(u'Синоним страницы', max_length = 255, null=True, unique=True, blank = True)
     template = models.CharField(u'Заданный шаблон', max_length = 255, blank = True, null=True)
     
     menu_url = models.CharField(u'URL пункта меню',

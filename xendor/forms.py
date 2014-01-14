@@ -18,6 +18,7 @@ choice_list = [['', ' - Модули не ассоциированы - ']]
 for item in app_choises:
     choice_list.append([item, app_choises[item]['app_name']])
 
+
 def get_children(node):
     list = []
     for item in node.get_children():
@@ -34,6 +35,7 @@ def get_pages():
 
     return list
 
+
 class PageAdminForm(forms.ModelForm):
     app_extension = forms.CharField(
         label = 'Ассоциированый модуль',
@@ -46,16 +48,16 @@ class PageAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.declared_fields['parent'].choices = get_pages()
 
-        super (PageAdminForm, self).__init__ (*args, **kwargs)
+        super(PageAdminForm, self).__init__ (*args, **kwargs)
 
 
-    def clean_slug(self):
-        slug = self.cleaned_data.get('slug', None)
-
-        if slug.lower() != cyr2lat(slug).lower().replace(' ', '_'):
-            raise forms.ValidationError(u'Неправильный формат синонима страницы (нельзя использовать дефис)')
-
-        return slug
+    # def clean_slug(self):
+    #     slug = self.cleaned_data.get('slug', None)
+    #
+    #     if slug.lower() != cyr2lat(slug).lower().replace(' ', '_'):
+    #         raise forms.ValidationError(u'Неправильный формат синонима страницы (нельзя использовать дефис)')
+    #
+    #     return slug
 
     def clean_parent(self):
         parent = self.cleaned_data.get('parent', None)
