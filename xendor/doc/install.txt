@@ -1,3 +1,4 @@
+pip install virtualenv
 virtualenv --system-site-packages ./python
 source ./python/bin/activate
 pip install --upgrade django==1.6
@@ -7,3 +8,4 @@ pip install git+https://github.com/tahy/django-filebrowser-no-grappelli.git#egg=
 pip install git+https://github.com/sociogenetics/xendor.git#egg=xendor
 pip install git+https://github.com/sociogenetics/mpttadmin.git#egg=mpttadmin
 pip install django-mptt
+pip install django-grappelli==2.5.1

@@ -12,6 +12,7 @@ WATERMARK_Y_SHIFT = 20
 
 
 def image_process(image, width, height, opt = []):
+    """ Xendor thumbnail: Процессинг для картинок """
     
     for effect in opt:
         if effect == 'resize':

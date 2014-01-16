@@ -1,4 +1,8 @@
 eclipse.preferences.version=1
+<<<<<<< HEAD
 encoding//xendor/middleware.py=utf-8
 encoding//xendor/urls.py=utf-8
+=======
+encoding//xendor/thumbnail.py=utf-8
+>>>>>>> d0446521e81bd48233d60cb732fb2a6f97c9474f
 encoding/setup.py=utf-8

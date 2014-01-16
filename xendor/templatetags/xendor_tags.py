@@ -13,8 +13,9 @@ from xendor.thumbnail import thumbnail
 
 register = template.Library()
 
+
 @register.inclusion_tag('tags/fragment.html')
-def fragment (fragment_name):
+def fragment(fragment_name):
     """Вывод чанка (куска текста из модуля текстовые блоки)"""
 
     try:
@@ -23,6 +24,12 @@ def fragment (fragment_name):
         fragment = ''
         
     return {'fragmaent': fragment}
+
+
+@register.assignment_tag
+def subpages(page):
+    return page.get_children().filter(visible=True)
+
 
 @register.inclusion_tag('dummy.html', takes_context=True)
 def menu(context, params="", template='menu/menu.html'):
@@ -289,6 +296,7 @@ def admin_image_upload_js():
 </script>
 """
 
+
 @register.inclusion_tag('tags/setting.html')
 def get_setting(name):
     """Получает переменную из настроек сайта и выводит аз ис в шаблон"""
@@ -300,6 +308,7 @@ def get_setting(name):
 
     return {'value': ''}
 
+
 @register.filter
 @stringfilter
 def get_2_page_link_by_id(id):
@@ -308,12 +317,14 @@ def get_2_page_link_by_id(id):
     except Page.DoesNotExist:
         return '#'
 
+
 @register.inclusion_tag('tags/page_content.html')
 def get_page_content_by_id(id):
     try:
         return {'page' : Page.objects.get(pk=int(id))}
     except Page.DoesNotExist:
         return {}
+
 
 def _formater_1000(value):
     """Форматирование больших чисел в более читабельный вид"""
