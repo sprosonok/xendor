@@ -1,21 +1,20 @@
 {% extends "admin/change_form.html" %}
-{% load i18n %}
 
+<!-- LOADING -->
+{% load admin_static i18n admin_modify admin_urls grp_tags %}
+
+<!-- OBJECT TOOLS -->
 {% block object-tools %}
     {% if change %}
         {% if not is_popup %}
-            <ul class="object-tools nav-pills pull-right" style="list-style: none; margin-top: -30px;">
+            <ul class="grp-object-tools">
                 {% block object-tools-items %}
                     <li><a href="upload/" class="btn"><i class="icon-picture"></i> Фотогалерея</a></li>
-
-                    <li><a href="history/" class="historylink btn" style="margin-left: 5px;">{% trans "History" %}</a></li>
-
-                    {% if has_absolute_url %}
-                        <li><a href="../../../r/{{ content_type_id }}/{{ object_id }}/" class="viewsitelink btn" style="margin-left: 5px;">{% trans "View on site" %}</a></li>
-                    {% endif%}
+                    {% url opts|admin_urlname:'history' original.pk|admin_urlquote as history_url %}
+                    <li><a href="{% add_preserved_filters history_url %}">{% trans "History" %}</a></li>
+                    {% if has_absolute_url %}<li><a href="{% url 'admin:view_on_site' content_type_id original.pk %}" class="grp-state-focus" target="_blank">{% trans "View on site" %}</a></li>{% endif%}
                 {% endblock %}
             </ul>
-            <br class="clear"/>
         {% endif %}
     {% endif %}
 {% endblock %}
