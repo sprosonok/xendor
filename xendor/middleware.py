@@ -14,7 +14,7 @@ class CmsCoreMiddleware(object):
             if not request.user.is_staff and not request.META['PATH_INFO'] == reverse('xendor-closed'):
                 return HttpResponseRedirect(reverse('xendor-closed'))
         elif request.META['PATH_INFO'] == reverse('xendor-closed'):
-            return HttpResponseRedirect(reverse('main-page'))
+            return HttpResponseRedirect(reverse('home'))
 
 
 class XendorSettingMiddleware(object):
