@@ -71,7 +71,7 @@ class Page(MPTTModel):
 
     class MPTTMeta:
         pass
-
+        
     class Meta:
         verbose_name = u'страница'
         verbose_name_plural = u'Страницы сайта'

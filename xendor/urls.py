@@ -5,7 +5,7 @@ from xendor.views import PageView, HomeView, SiteMapView, CloseView
 
 urlpatterns = patterns('',
     #главная страничка
-    url(r'^$', HomeView.as_view(), name='home'),
+    url(r'^$', HomeView.as_view(), name='xendor-home'),
 
     #карта сайта
     url(r'^sitemap/$', SiteMapView.as_view(), name="xendor-sitemap"),
