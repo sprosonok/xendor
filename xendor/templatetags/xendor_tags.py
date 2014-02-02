@@ -40,7 +40,7 @@ def menu(context, params="", template='menu/menu.html'):
         request = context['request']
     except KeyError:
         return {'template': 'empty.html'}
-
+    
     #инстанцирование класса меню
     try:
         current_url = XendorSettings().get('activated_node') or request.get_full_path().split('?')[0]
@@ -208,7 +208,13 @@ def keywords(context, template='menu/metakeywords.html'):
 @stringfilter
 def xthumbnail(value, arg):
     """Делает тумбочку вписываемую в параметры
-        использование {{ item.image|xdp_thumbnail:'200x300' }}"""
+       использование {{ item.image|xthumbnail:'width;height;[fix;blank;wtm]' }}
+       width – ширина
+       height – высота 
+       fix – обрезает картинку до нужного размера
+       blank – заполняет белым или прозрачным вписывая в заданный размер
+       wtm – добавляет ватермарк
+    """
     
     return thumbnail(value, arg)
 
