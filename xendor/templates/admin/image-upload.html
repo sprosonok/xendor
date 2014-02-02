@@ -5,10 +5,11 @@
 {% load admin_urls %}
 {% load xendor_tags %}
 
+
+<!-- EXTRAHEAD -->
 {% block extrahead %}{{ block.super }}
     <!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.css">
-{#    <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap-responsive.css">#}
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}css/upload/bootstrap-image-gallery.min.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}css/upload/jquery.fileupload-ui.css">
     <!-- Shim to make HTML5 elements usable in older Internet Explorer versions -->
@@ -46,7 +47,7 @@
         Фотогалерея
     </li>
 </ul>
-<ul class="messagelist" style="margin-left: 0; margin-top: -17px;list-style: none;">
+<ul class="messagelist">
 
     <li class="alert alert-info">Для добавления фотографий в список загрузки, перетащите их на любую область страницы</li>
 
