@@ -1,28 +1,26 @@
 {% load xendor_tags %}
 
 {% if page.paginator.num_pages > 1 %}
-    <div class="pagination">
-        <ul>
-            {% if page.number == 1 %}
+    <ul class="pagination">
+        {% if page.number == 1 %}
+        {% else %}
+            <li><a href="{% insert_get_parameter page.previous_page_number page_get_parameter %}">
+                назад
+            </a></li>
+        {% endif %}
+
+        {% for page_number in page_range %}
+            {% if page_number == page.number %}
+                <li class="active"><a>{{ page.number }}</a></li>
             {% else %}
-                <li><a href="{% insert_get_parameter page.previous_page_number page_get_parameter %}">
-                    назад
-                </a></li>
+                <li><a  href="{% insert_get_parameter page_number page_get_parameter %}">{{ page_number }}</a></li>
             {% endif %}
+        {% endfor %}
 
-            {% for page_number in page_range %}
-                {% if page_number == page.number %}
-                    <li class="active"><a>{{ page.number }}</a></li>
-                {% else %}
-                    <li><a  href="{% insert_get_parameter page_number page_get_parameter %}">{{ page_number }}</a></li>
-                {% endif %}
-            {% endfor %}
-
-            {% if page.has_next %}
-                <li><a href="{% insert_get_parameter page.next_page_number page_get_parameter %}">
-                    вперед
-                </a></li>
-            {% endif %}
-        </ul>
-    </div>
+        {% if page.has_next %}
+            <li><a href="{% insert_get_parameter page.next_page_number page_get_parameter %}">
+                вперед
+            </a></li>
+        {% endif %}
+    </ul>
 {% endif %}

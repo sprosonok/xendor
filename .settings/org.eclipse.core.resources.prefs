@@ -1,9 +1,14 @@
 =\=\=\=\=\=\=
 <<<<<<<=HEAD
->>>>>>>=d0446521e81bd48233d60cb732fb2a6f97c9474f
+>>>>>>>=1e7069412eb95ae16d0d446cefd6d53abf88674a
 eclipse.preferences.version=1
+encoding//xendor/admin.py=utf-8
+encoding//xendor/admin_utils.py=utf-8
+encoding//xendor/cbv.py=utf-8
+encoding//xendor/forms.py=utf-8
 encoding//xendor/middleware.py=utf-8
 encoding//xendor/models.py=utf-8
+encoding//xendor/templatetags/xendor_tags.py=utf-8
 encoding//xendor/thumbnail.py=utf-8
 encoding//xendor/urls.py=utf-8
 encoding//xendor/views.py=utf-8

@@ -7,6 +7,7 @@ pip install django-tinymce
 #pip install git+https://github.com/tahy/django-filebrowser-no-grappelli.git#egg=django-filebrowser
 pip install git+https://github.com/sociogenetics/xendor.git#egg=xendor
 pip install git+https://github.com/sociogenetics/mpttadmin.git#egg=mpttadmin
+pip install git+https://github.com/barbuza/supercaptcha#egg=supercaptcha
 pip install django-mptt
 pip install django-filebrowser
 pip install django-grappelli==2.5.1
