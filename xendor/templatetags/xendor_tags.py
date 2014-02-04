@@ -334,13 +334,13 @@ def get_page_content_by_id(id):
 
 def _formater_1000(value):
     """Форматирование больших чисел в более читабельный вид"""
-
+    
     try:
         return (lambda h, q:
                 (lambda s:
-                 ''.join(reversed([' ' * int(not((i + 1) % 3) and i != 0) + s[len(s) - i - 1] for i in xrange(len(s))]))
+                 ''.join(reversed(['&nbsp;' * int(not((i + 1) % 3) and i != 0) + s[len(s) - i - 1] for i in xrange(len(s))]))
                     )(h) + ('.' + str(round(float('.' + q), 2)).split('.')[1]) * int(bool(int(q)))
-            )(*str(value).split('.'))
+            )(*str(value).split('.')).lstrip('&nbsp;')
     except:
         return value
 
