@@ -222,6 +222,7 @@ def xthumbnail(value, arg):
         return thumbnail(value, arg)
     except: return ''
 
+
 @register.inclusion_tag('tags/insert-get-parameter.html', takes_context=True)
 def insert_get_parameter(context, value, name_get_parameter='page', exclude_vars=''):
     """мегаполезная шняга: формирует ссцыль для постранички, не трогает остальные get-параметры если они есть"""
@@ -343,6 +344,7 @@ def _formater_1000(value):
             )(*str(value).split('.'))
     except:
         return value
+
 
 @register.filter
 @stringfilter

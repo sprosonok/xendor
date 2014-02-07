@@ -50,7 +50,7 @@ class Page(MPTTModel):
     title = models.CharField(verbose_name=u"Заголовок", max_length=255, null=False, blank=False)
     menu_title = models.CharField(u'Заголовок пункта меню', max_length = 255, blank = True, default='')
     
-    # content = HTMLField(u'Текст матетериала', blank=True, null=True)
+    content = HTMLField(u'Текст матетериала', blank=True, null=True)
     visible = models.BooleanField(default=True)
     in_menu = models.BooleanField(default=True)
     is_main = models.BooleanField(default=False)

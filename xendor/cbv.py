@@ -418,9 +418,9 @@ class ImageAdmin(object):
             form = self.get_form(form_class)
 
             return TemplateResponse(
-                request = self.request,
-                template = self.get_template_names(),
-                context = self.get_context_data(form=form)
+                request=self.request,
+                template=self.get_template_names(),
+                context=self.get_context_data(form=form)
             )
 
         def get_context_data(self, **kwargs):
@@ -432,6 +432,7 @@ class ImageAdmin(object):
             return context
 
         def post(self, request, *args, **kwargs):
+            print request.POST
             self.object = None
             self.item = get_object_or_404(self.item_class, pk=int(args[0]))
             form_class = self.get_form_class()
