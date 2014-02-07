@@ -12,7 +12,7 @@ def _image_field(dbfield, size, model_admin, item):
     return '<a href="'+ str(item.pk) +'/"><img src="'+ str(image_path) +'"/></a>'
 
 
-def image_field(db_field, column_name, size='60x60'):
+def image_field(db_field, column_name, size='60;60'):
     """Универсальный констуктор полей для изображения"""
     
     result = curry(_image_field, db_field, size)
