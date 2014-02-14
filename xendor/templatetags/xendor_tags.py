@@ -318,7 +318,7 @@ def get_setting(name):
 
 @register.filter
 @stringfilter
-def get_2_page_link_by_id(id):
+def get_page_link_by_id(id):
     try:
         return Page.objects.get(pk=id).get_absolute_url()
     except Page.DoesNotExist:
