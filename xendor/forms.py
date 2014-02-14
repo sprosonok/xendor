@@ -166,3 +166,72 @@ def bootstrapped(self):
     return mark_safe(u'\n'.join(output))
 
 forms.BaseForm.bootstrapped = bootstrapped
+
+def bootstrap_widget(self, type):
+    
+    if type == 'BooleanField':
+        row = u"""
+          <div class="checkbox">
+            <label class="control-label %(css_classes)s">
+                %(field)s %(label_text)s
+            </label>
+          </div>"""
+    else:
+        row = u"""
+            <div class="form-group %(has_error)s">
+                %(label)s
+                %(field)s
+                <span class="help-inline">%(errors)s</span>
+                <p class="help-block">%(help_text)s</p>
+            </div>"""
+    
+    return row % {
+         u'label': self.bw_label,
+         u'has_error': self.bw_error_text and u'error' or '',
+         u'field': unicode(self.bw_bf),
+         u'errors': self.bw_error_text,
+         u'help_text': self.bw_help_text,
+         u'css_classes': self.bw_css_classes,
+         u'label_text': self.bw_bf.label
+      }
+
+def bootstrapped3(self):
+    top_errors = self.non_field_errors()
+    output, hidden_fields = [], []
+
+    for name, field in self.fields.items():
+        bf = BoundField(self, field, name)
+        
+        bf_errors = self.error_class([conditional_escape(error) for error in bf.errors])
+        
+        error_text = bf.errors.as_text()[2:]
+        
+        if bf.is_hidden:
+            if bf_errors:
+                top_errors.extend([u'(Hidden field %s) %s' % (name, force_unicode(e)) for e in bf_errors])
+            hidden_fields.append(unicode(bf))
+        else:
+            if bf.label:
+                # Рендерялка label
+                label = bf.label_tag(conditional_escape(force_unicode(bf.label)), attrs={'class': "control-label"}) or ''
+            else:
+                label = ''
+    
+            if field.help_text:
+                help_text = help_text_html % force_unicode(field.help_text)
+            else:
+                help_text = u''
+            
+            self.bw_bf = bf
+            self.bw_label = force_unicode(label)
+            self.bw_help_text = help_text
+            self.bw_css_classes = bf.css_classes()
+            
+            self.bw_error_text = force_unicode(error_text)
+            self.bw_help_text = help_text
+            
+            output.append(bootstrap_widget(self, unicode(field.__class__.__name__)))
+            
+    return mark_safe(u'\n'.join(output))
+
+forms.BaseForm.bootstrapped3 = bootstrapped3
