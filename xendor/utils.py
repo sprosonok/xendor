@@ -124,24 +124,23 @@ def _is_unique(instance, slug):
     except instance.__class__.DoesNotExist:
         return True
 
-def _clean_dash(source):
-    """Убираем повторяющиеся тире"""
+def _clean_dash(source, exclude_slash):
+    """Убираем повторяющиеся тире и опционально / из строки"""
 
     while u'--' in source:
         source = source.replace(u'--', u'-')
 
-    return source.strip('-')
+    return u''.join([char.replace('/','_') for char in source.strip('-')]) 
 
-
-def generate_slug(instance, source):
+def generate_slug(instance, source, exclude_slash = True, need_unique = True):
     """Генерация уникального слага для заданной модели"""
 
-    num, generator = 0, lambda s: _clean_dash(cyr2lat(s.strip()).lower().replace(' ', '-'))
-
-    while not _is_unique(instance, generator(source + (u'-' + unicode(num)) * int(bool(num)))): num += 1
-
+    num, generator = 0, lambda s: _clean_dash(cyr2lat(s.strip()).lower().replace(' ', '-'), exclude_slash)
+    
+    if need_unique:
+        while not _is_unique(instance, generator(source + (u'-' + unicode(num)) * int(bool(num)))): num += 1
+    
     return generator(source + (u'-' + unicode(num)) * int(bool(num)))
-
 
 def getmd5(path, file='_.jpg'):
     basename, format = file.rsplit('.', 1)

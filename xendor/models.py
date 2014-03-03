@@ -98,7 +98,7 @@ class Page(MPTTModel):
         if slug and len(slug) > 240:
             slug = slug[:240]
 
-        slug = generate_slug(self, slug)
+        slug = generate_slug(self, slug, False)
 
         if not self.pk or not self.slug:
             try:
