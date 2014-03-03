@@ -28,7 +28,7 @@
     } else {
         // Browser globals:
         factory(
-            window.grp,
+            window.grp.jQuery,
             window.loadImage
         );
     }
