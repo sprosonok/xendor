@@ -11,3 +11,4 @@ pip install git+https://github.com/barbuza/supercaptcha#egg=supercaptcha
 pip install django-mptt
 pip install django-filebrowser
 pip install django-grappelli==2.5.1
+pip install pytils

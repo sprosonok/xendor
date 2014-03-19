@@ -4,6 +4,7 @@
 from django import template
 from django.conf import settings
 from django.template.defaultfilters import stringfilter
+from django.utils.html import mark_safe
 
 from xendor.models import Page, Fragment
 from xendor.settings import XendorSettings
@@ -290,7 +291,7 @@ def _formater_1000(value):
 def x1000_filter(value):
     """Форматирует число добавляя пробелы для лучшей читабельности"""
 
-    return utils._formater_1000(value)
+    return mark_safe(utils._formater_1000(value))
 
 @register.simple_tag
 def xicon(icon):
