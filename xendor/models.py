@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 import mptt
-from mptt.models import TreeForeignKey, MPTTModel
 import re
-from django.core.validators import RegexValidator
-from tinymce.models import HTMLField
+
 from django.db import models
 from django.core import exceptions, validators
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from django.core.validators import RegexValidator
+
+from mptt.models import TreeForeignKey, MPTTModel
+from tinymce.models import HTMLField
 
 from xendor.utils import generate_slug
 
@@ -80,7 +82,13 @@ class Page(MPTTModel):
     @models.permalink
     def get_absolute_url(self):
         return ('xendor-page', [self.slug])
-
+    
+    def get_app_url(self):
+        from xendor.structure import Structure
+        url = Structure().get_app_url(self.app_extension)
+        if not url:
+            url = self.get_absolute_url()
+        return url
 
     def __unicode__(self):
         return self.menu_title or self.title

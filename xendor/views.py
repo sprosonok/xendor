@@ -52,7 +52,8 @@ class PageView(DetailView):
         context = super(PageView, self).get_context_data(**kwargs)
         
         context.update({
-            'page_address': unicode('parent=xendor-page&') + self.get_object().slug
+            'page_address': unicode('parent=xendor-page&') + self.get_object().slug,
+            'photo': 'uploads/about/r_tonel.jpg'
         })
 
         return context

@@ -264,6 +264,14 @@ def get_page_link_by_id(id):
     except Page.DoesNotExist:
         return '#'
 
+@register.filter
+@stringfilter
+def get_page_by_id(id):
+    try:
+        return Page.objects.get(pk=id)
+    except Page.DoesNotExist:
+        return '#'
+
 
 @register.inclusion_tag('tags/page_content.html')
 def get_page_content_by_id(id):
