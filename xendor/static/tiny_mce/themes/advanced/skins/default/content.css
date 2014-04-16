@@ -1,0 +1,233 @@
+@charset "utf-8";
+body, td, pre {
+    color: #000;
+    font-size: 14px;
+    line-height: 140%;
+    margin: 15px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: #CCC;
+}
+
+p {
+    clear: both;
+    overflow: hidden;
+}
+
+nobr {
+    display: inline-block;
+    background-color: #FF9;
+    white-space: nowrap;
+}
+
+/*span {
+    display: inline-block;
+    background-color: #FCC;
+}*/
+
+h1 {
+    font-size: 32px;
+    line-height: 36px;
+}
+
+h2 {
+    font-size: 22px;
+    line-height: 28px;
+    font-style: normal;
+    font-weight: bold;
+    font-family: "Trebuchet MS", Tahoma, sans-serif;
+}
+
+h3 {
+    font-size: 17px;
+    font-style: italic;
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+
+h4 {
+    font-size: 1em
+}
+
+h5 {
+    font-size: .83em
+}
+
+h6 {
+    font-size: .75em
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+div,
+blockquote {
+    display: block;
+    padding: 8px;
+    border: 1px solid #999;
+    background-color: #FFF;
+    margin-top: 0;
+    margin-bottom: 10px;
+    margin-right: 0;
+}
+
+ul,
+ol {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-right: 8px;
+    border: 1px solid #999;
+    background-color: #FFF;
+}
+
+ul li, ol li {
+    margin-bottom: 5px;
+}
+
+blockquote {
+    background-color: #E8E8E8;
+}
+
+table {
+    background-color: #CFC;
+    margin-bottom: 10px;
+}
+
+table tr th,
+table tr td {
+    padding: 5px;
+    vertical-align: top;
+    text-align: left;
+}
+
+table tr th {
+    font-style: italic;
+    font-weight: bold;
+}
+
+table caption {
+    background: inherit;
+    padding: 5px;
+    text-align: left;
+}
+
+p:before,
+blockquote:before,
+h2:before,
+div:before,
+h1:before,
+h2:before,
+h3:before,
+h4:before,
+h5:before,
+h6:before,
+ul:before,
+ol:before,
+caption:before {
+    display: block;
+    font-size: 9px;
+    line-height: 10px;
+    padding-bottom: 3px;
+    color: #999;
+    font-family: "Lucida Console", Monaco, monospace;
+    font-style: normal;
+    font-weight: normal;
+    text-align: left;
+}
+
+p:before {
+    content: "Абзац"
+}
+
+blockquote:before {
+    content: "Цитата"
+}
+
+h1:before {
+    content: "Заголовок 1"
+}
+
+h2:before {
+    content: "Заголовок 2"
+}
+
+h3:before {
+    content: "Заголовок 3"
+}
+
+h4:before {
+    content: "Заголовок 4"
+}
+
+h5:before {
+    content: "Заголовок 5"
+}
+
+h6:before {
+    content: "Заголовок 6"
+}
+
+div:before {
+    content: "DIV"
+}
+
+ul:before {
+    content: "Список"
+}
+
+ol:before {
+    content: "Пронумерованный список"
+}
+
+caption:before {
+    content: "Заголовок таблицы"
+}
+
+/*div.cut-out:before {
+    content: "Врезка"
+}*/
+
+/*div.pull-right:before {
+    content: "Расширяемый блок"
+}*/
+
+/*img.img_left {*/
+/*float: left;*/
+/*margin-right: 20px;*/
+/*margin-bottom: 10px;*/
+/*}*/
+
+/*table.m-fill {
+    width: 100%;
+}
+
+table.m-fill.pull-right {
+    width: 100%;
+    background-color: #E1EDF4;
+}
+
+div.cut-out {
+    border: 2px dashed #999;
+    background-color: #FF9;
+}
+
+div.pull-right {
+    border: 2px dashed #999;
+    background-color: #E1EDF4;
+}*/
+
+body.mceContentBody a {
+    color: #0072bc !important
+}
+
+/*
+body.mceContentBody a.inf {
+    display: inline;
+    border-bottom: 1px solid #0072bc;
+    padding-bottom: .08em;
+}*/

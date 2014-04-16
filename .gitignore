@@ -37,3 +37,4 @@ nosetests.xml
 .idea
 .settings
 .settings/*
+xendor/static/.DS_Store

@@ -11,6 +11,7 @@ from xendor.settings import XendorSettings
 from xendor.structure import Structure
 from xendor.menu import Menu, _render_pars
 from xendor.thumbnail import thumbnail
+from xendor.templatetags.utils import _formater_1000, get_completed
 
 import utils
 
@@ -280,20 +281,6 @@ def get_page_content_by_id(id):
     except Page.DoesNotExist:
         return {}
 
-
-
-def _formater_1000(value):
-    """Форматирование больших чисел в более читабельный вид"""
-    
-    try:
-        return (lambda h, q:
-                (lambda s:
-                 ''.join(reversed(['&nbsp;' * int(not((i + 1) % 3) and i != 0) + s[len(s) - i - 1] for i in xrange(len(s))]))
-                    )(h) + ('.' + str(round(float('.' + q), 2)).split('.')[1]) * int(bool(int(q)))
-            )(*str(value).split('.')).lstrip('&nbsp;')
-    except:
-        return value
-
 @register.filter
 @stringfilter
 def x1000_filter(value):
@@ -306,3 +293,7 @@ def xicon(icon):
     """ Render an icon """
     
     return '<span class="glyphicon glyphicon-{icon}"></span>'.format(icon=icon)
+
+@register.assignment_tag
+def xcontent_status():
+    return get_completed()

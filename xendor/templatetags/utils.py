@@ -74,3 +74,36 @@ uploader_js = """
 {% } %}
 </script>
 """
+
+from django.conf import settings
+from django.db.models import Q, get_model
+
+def get_completed():
+    count, all = 0, 0
+    
+    for model_name, options in settings.CONTENT_MODELS.items():
+        assert 'fields' in options, \
+               'Please, set up fields options for "%s".' % modelname
+        
+        fields = options['fields']
+        
+        app_label, model_name = model_name.split('.')
+        model = get_model(app_label, model_name)
+        
+        search_lookup = None
+
+        for field in fields:
+            if search_lookup is None:
+                search_lookup = Q(**{field: None})
+                search_lookup |= Q(**{field: ''})
+            else:
+                search_lookup |= Q(**{field: None})
+                search_lookup |= Q(**{field: ''})
+        
+        objects = model.objects.all().exclude(search_lookup).distinct()
+        
+        count += objects.count()
+        all += model.objects.all().count()
+    
+    return count, all, int(100.0*count/all)
+
