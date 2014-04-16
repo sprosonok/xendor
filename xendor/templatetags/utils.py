@@ -86,6 +86,7 @@ def get_completed():
                'Please, set up fields options for "%s".' % modelname
         
         fields = options['fields']
+        trigger = options.get('trigger', None)
         
         app_label, model_name = model_name.split('.')
         model = get_model(app_label, model_name)
@@ -93,7 +94,9 @@ def get_completed():
         search_lookup = None
 
         for field in fields:
-            if search_lookup is None:
+            if '|' in field:
+                pass
+            elif search_lookup is None:
                 search_lookup = Q(**{field: None})
                 search_lookup |= Q(**{field: ''})
             else:
@@ -102,7 +105,14 @@ def get_completed():
         
         objects = model.objects.all().exclude(search_lookup).distinct()
         
-        count += objects.count()
+        if trigger:
+            for obj in objects:
+                if not trigger(obj):
+                    continue            
+                count += 1
+        else:
+            count = objects.count()
+        
         all += model.objects.all().count()
     
     return count, all, int(100.0*count/all)
