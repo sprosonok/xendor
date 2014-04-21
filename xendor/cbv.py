@@ -8,17 +8,54 @@ from django.db.models.query_utils import Q
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.utils import simplejson
-from django.views.generic.base import View, TemplateResponse
+from django.views.generic.base import View, TemplateResponse, RedirectView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 from django.shortcuts import get_object_or_404
 from django.conf import settings
-from xendor.models import Page
+from django.contrib import messages
 
+from xendor.models import Page
 from xendor.utils import make_page_for_cbv
 from xendor.settings import XendorSettings
 from xendor.thumbnail import thumbnail
+
+
+class RefererRedirectWithMessage(RedirectView):
+    """Миксин для обработки действий требующих редиректа обратно на страницу
+        (лайки, добавление в корзину и т.п.)
+        добавляет в мессадж фреймворк прописанное сообщение
+
+        атрибуты:
+            action_message = u'' - текст сообщения
+            action - calable объект реализующий функционал
+            post_action - calable объект реализующий отдельный функционал для post запросов
+
+        если post_action не задан и пост-запросы возможны (по умолчанию - да),
+            то выполняется тот же функционал что и для гет запросов
+    """
+
+    http_method_names = [u'get', u'post']
+    permanent = False
+    action_message = u''
+
+    action = lambda o: None
+
+    def get_redirect_url(self, *args, **kwargs):
+        messages.add_message(self.request, messages.SUCCESS, self.action_message)
+        return self.request.META.get('HTTP_REFERER') or '/'
+
+    def get(self, request, *args, **kwargs):
+        self.action()
+        return super(RefererRedirectWithMessage, self).get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        if getattr(self, 'post_action', None):
+            self.post_action()
+        else:
+            self.action()
+        return super(RefererRedirectWithMessage, self).post(request, *args, **kwargs)
 
 
 class SortingMixin(ListView):
