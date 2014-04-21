@@ -14,11 +14,13 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 from django.shortcuts import get_object_or_404
 from django.conf import settings
-from xendor.models import Page
+from django.contrib import messages
 
+from xendor.models import Page
 from xendor.utils import make_page_for_cbv
 from xendor.settings import XendorSettings
 from xendor.thumbnail import thumbnail
+
 
 
 class RefererRedirectWithMessage(RedirectView):
