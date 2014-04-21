@@ -22,7 +22,6 @@ from xendor.settings import XendorSettings
 from xendor.thumbnail import thumbnail
 
 
-
 class RefererRedirectWithMessage(RedirectView):
     """Миксин для обработки действий требующих редиректа обратно на страницу
         (лайки, добавление в корзину и т.п.)
