@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 import mptt
 import re
+import urllib
 
 from django.db import models
 from django.core import exceptions, validators
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import RegexValidator
+from django.conf import settings
 
 from mptt.models import TreeForeignKey, MPTTModel
 from tinymce.models import HTMLField
@@ -145,7 +147,16 @@ class Page(MPTTModel):
             count_pages = Page.objects.all().count()
             if count_pages == 0:
                 self.is_main = True
-
+        
+        if getattr(settings, 'AUTO_CONTENT', False) and getattr(settings, 'DEBUG', False) and not self.content:
+            href = 'http://referats.yandex.ru/marketing.xml'
+            
+            html = urllib.urlopen(href).read()
+            
+            html = html.split('</h1>')[1].split('</div>')[0]
+            
+            self.content = html
+        
         super(Page, self).save(force_insert=False, force_update=False, using=None)
 
 

@@ -2,7 +2,7 @@
 import os
 import urllib2
 
-from PIL import Image
+from PIL import Image, ImageDraw
 from django.conf import settings
 
 #Смещение по y для водяных знаков
@@ -119,6 +119,44 @@ def thumbnail(file, size='200;200'):
         
     return miniature_url
 
+def xendor_dummy(line_size, size='200;200'):
+    width = int(size.split(';')[0])
+    height = int(size.split(';')[1])
+    
+    try:
+        color = size.split(';')[2]
+    except:
+        color = '#000000'
+    
+    sizex = unicode(width)+'x'+unicode(height)
+    
+    try:
+        background = size.split(';')[3]
+        miniature = 'xdummy_' + line_size + '_ ' + color.replace('#', '') + '_ ' + background.replace('#', '') + '_ ' + sizex + '.png'
+    except:
+        background = (255,255,255,0)
+        miniature = 'xdummy_' + line_size + '_ ' + color.replace('#', '') + '_ ' + sizex + '.png'
+    
+    miniature_filename = os.path.join(settings.MEDIA_ROOT, miniature)
+    miniature_url = os.path.join(settings.MEDIA_URL, miniature)
+    
+    if not os.path.exists(miniature_filename):
+        im = Image.new("RGBA", (width, height), background)
+        draw = ImageDraw.Draw(im)
+        #draw.ellipse((10,10,width-10,height-10), fill="red", outline="silver")
+        draw.line((0, 0, width, height), width=int(line_size), fill = color)
+        draw.line((width, 0, 0, height), width=int(line_size), fill = color)
+        
+        draw.line((0, 0, 0, height-1), width=int(line_size), fill = color)
+        draw.line((0, 0, width-1, 0), width=int(line_size), fill = color)
+        draw.line((width-1, 0, width-1,  height-1), width=int(line_size), fill = color)
+        draw.line((0, height-1, width-1,  height-1), width=int(line_size), fill = color)
+        
+        del draw
+        
+        im.save(miniature_filename, im.format)
+        
+    return miniature_url
 
 def download(url, file_name, proxy_addres=None,proxy_user=None,proxy_pass=None):
     if url[:7]!='http://':
@@ -165,3 +203,4 @@ def internet_thumbnail(file, size='200x200'):
         download(file, filename)
     
     return file_url
+

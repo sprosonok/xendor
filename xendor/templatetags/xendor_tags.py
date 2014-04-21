@@ -10,7 +10,7 @@ from xendor.models import Page, Fragment
 from xendor.settings import XendorSettings
 from xendor.structure import Structure
 from xendor.menu import Menu, _render_pars
-from xendor.thumbnail import thumbnail
+from xendor.thumbnail import thumbnail, xendor_dummy
 from xendor.templatetags.utils import _formater_1000, get_completed
 
 import utils
@@ -31,8 +31,14 @@ def fragment(fragment_name):
 
 
 @register.assignment_tag
-def subpages(page):
-    return page.get_children().filter(visible=True)
+def subpages(page, smart_menu = False):
+    pages = page.get_children().filter(visible=True)
+    
+    if bool(smart_menu) and page.level > 1 and pages.count() == 0:
+        pages = page.parent.get_children().filter(visible=True)
+    
+    return pages
+    
 
 
 @register.inclusion_tag('dummy.html', takes_context=True)
@@ -222,10 +228,21 @@ def xthumbnail(value, arg):
     
     return thumbnail(value, arg)
 
-    try:
-        return thumbnail(value, arg)
-    except: return ''
-
+@register.filter
+@stringfilter
+def xdummy(value, arg):
+    """Делает заглушку вместо картинки
+       использование {{ line_size|xthumbnail:'width;height[color;background]' }}
+       line_size - ширина линии
+       width – ширина
+       height – высота 
+       color - цвет линии
+       background - цвет бекграунда
+       
+       Пример: {{1|xdummy:'100;100;#2976bb;#f6f6f6'}}
+    """
+    
+    return xendor_dummy(value, arg)
 
 @register.inclusion_tag('tags/insert-get-parameter.html', takes_context=True)
 def insert_get_parameter(context, value, name_get_parameter='page', exclude_vars=''):
