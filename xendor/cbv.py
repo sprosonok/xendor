@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Небольшой набор компонентов для class based view """
-
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import get_current_site
 from django.core.mail.message import EmailMessage
 from django.core.urlresolvers import reverse
@@ -22,6 +22,39 @@ from xendor.settings import XendorSettings
 from xendor.thumbnail import thumbnail
 
 
+class ContentTypeMixin(View):
+    """Миксин для обработки ссылки на контент тайп оъект
+        подразумевается, что паттерн урла содержит переменные:
+        - content_type_id - ид типа
+        - object_id - ид объекта
+        Например: url(r'^remove-like/(?P<content_type_id>\d+)/(?P<object_id>\d+)/$', RemoveLike.as_view(), name='likes-remove'),
+
+
+        миксин вычисляет:
+         - объект контент тайпа: self.object_type
+         - сам объект: self.object
+
+        в контексте шаблона соотвественно добавляются переменные object и object_type
+    """
+
+    object_type = None
+    object = None
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object_type = ContentType.objects.get(pk=kwargs['content_type_id'])
+        self.object = self.object_type.get_object_for_this_type(pk=kwargs['object_id'])
+
+        return super(ContentTypeMixin, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(ContentTypeMixin, self).get_context_data(**kwargs)
+        context.update({
+            'object_type': self.object_type,
+            'object': self.object
+        })
+        return context
+
+
 class RefererRedirectWithMessage(RedirectView):
     """Миксин для обработки действий требующих редиректа обратно на страницу
         (лайки, добавление в корзину и т.п.)
@@ -29,8 +62,8 @@ class RefererRedirectWithMessage(RedirectView):
 
         атрибуты:
             action_message = u'' - текст сообщения
-            action - calable объект реализующий функционал
-            post_action - calable объект реализующий отдельный функционал для post запросов
+            action - callable объект реализующий функционал
+            post_action - callable объект реализующий отдельный функционал для post запросов
 
         если post_action не задан и пост-запросы возможны (по умолчанию - да),
             то выполняется тот же функционал что и для гет запросов
@@ -109,11 +142,11 @@ class PageAppExtensionMixin(object):
 
 class ListByObjectSlugMixin(ListView):
     """Класс строящий список по внешнему ключу (ForeignKey) объекта передаваемого по слагу
-    помещает в контекст объект слагификации в переменной object
-    фильтрует список по этому объекту
-    необходимые параметры:
-    slugified_model = <класс модели указанный в ForeignKey>
-    поле ключа должно быть именем класса модели на которую указывает ключ в ловеркейсе
+        помещает в контекст объект слагификации в переменной object
+        фильтрует список по этому объекту
+        необходимые параметры:
+        slugified_model = <класс модели указанный в ForeignKey>
+        поле ключа должно быть именем класса модели на которую указывает ключ в ловеркейсе
     """
 
     slugified_model = None

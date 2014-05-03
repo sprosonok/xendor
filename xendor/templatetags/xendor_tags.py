@@ -32,6 +32,7 @@ def fragment(fragment_name):
 
 @register.assignment_tag
 def subpages(page):
+    """Создает в контексте шаблона переменную, использование: {% subpages for page as subpage_list %}"""
     return page.get_children().filter(visible=True)
 
 
