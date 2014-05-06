@@ -32,8 +32,10 @@ def fragment(fragment_name):
 
 @register.assignment_tag
 def subpages(page, smart_menu = False):
-    """ Возвращает видимые подстраницы для данной
-        smart_menu(Boolean) не возвращает страницы для первого уровня
+    """Создает в контексте шаблона переменную, использование: {% subpages for page as subpage_list %}
+
+    а еще какой-то долбоеб че-то там добавил при этом потер нахуй все коменты и не написал че оно делает,
+    ебать этого гандона грязной шваброй!
     """
     
     if type(page) == int:
@@ -45,7 +47,6 @@ def subpages(page, smart_menu = False):
         pages = page.parent.get_children().filter(visible=True)
     
     return pages
-    
 
 
 @register.inclusion_tag('dummy.html', takes_context=True)
