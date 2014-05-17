@@ -32,13 +32,16 @@ def fragment(fragment_name):
 
 login_required
 @register.assignment_tag
-def subpages(page, smart_menu=False):
+def subpages(page, smart_menu = False):
     """Создает в контексте шаблона переменную, использование: {% subpages for page as subpage_list %}
 
-    а еще какой-то долбоеб че-то там добавил при этом потер нахуй все коменты и не написал че оно делает,
-    ебать этого гандона грязной шваброй!
+        а еще какой-то долбоеб че-то там добавил при этом потер нахуй все коменты и не написал че оно делает,
+        ебать этого гандона грязной шваброй!
     """
-
+    
+    if type(page) == int:
+        page = Page.objects.get(pk=int(page))
+        
     pages = page.get_children().filter(visible=True)
     
     if bool(smart_menu) and page.level > 1 and pages.count() == 0:
@@ -280,33 +283,21 @@ def get_setting(name):
     return {'value': ''}
 
 
-@register.filter
-@stringfilter
-def get_page_link_by_id(id):
+@register.assignment_tag
+def xendor_page(id):
     try:
-        return Page.objects.get(pk=id).get_absolute_url()
+        return Page.objects.get(pk=int(id))
     except Page.DoesNotExist:
-        return '#'
+        try:
+            # костыль на случай если передали слаг вместо id (не документированная функция)
+            return Page.objects.get(slug=id)
+        except Page.DoesNotExist:
+            return None
 
-@register.filter
-@stringfilter
-def get_page_by_id(id):
-    try:
-        return Page.objects.get(pk=id)
-    except Page.DoesNotExist:
-        return '#'
-
-
-@register.inclusion_tag('tags/page_content.html')
-def get_page_content_by_id(id):
-    try:
-        return {'page' : Page.objects.get(pk=int(id))}
-    except Page.DoesNotExist:
-        return {}
 
 @register.filter
 @stringfilter
-def x1000_filter(value):
+def x1000(value):
     """Форматирует число добавляя пробелы для лучшей читабельности"""
 
     return mark_safe(utils._formater_1000(value))
@@ -317,6 +308,58 @@ def xicon(icon):
     
     return '<span class="glyphicon glyphicon-{icon}"></span>'.format(icon=icon)
 
+
 @register.assignment_tag
 def xcontent_status():
+    """ возвращает то насколько сайт наполнен (требует конфигурирования) """
+    
     return get_completed()
+
+
+##############################################
+# Функции к удалению с версии 9.0
+##############################################
+
+@register.filter
+@stringfilter
+def x1000_filter(value):
+    """
+    DEPRICATED!
+    Форматирует число добавляя пробелы для лучшей читабельности"""
+    
+    if settings.DEBUG:
+        raise NotImplementedError(u'x1000_filter больше не поддерживается (с версии Xendor 8.1). Используйте "x1000"')
+    return x1000(value)
+
+@register.filter
+@stringfilter
+def get_page_link_by_id(id):
+    if settings.DEBUG:
+        raise NotImplementedError(u'get_page_link_by_id больше не поддерживается (с версии Xendor 8.1). Используйте "{% xendor_page id as object %}"')
+    
+    try:
+        return Page.objects.get(pk=id).get_absolute_url()
+    except Page.DoesNotExist:
+        return '#'
+
+@register.filter
+@stringfilter
+def get_page_by_id(id):
+    if settings.DEBUG:
+        raise NotImplementedError(u'get_page_by_id больше не поддерживается (с версии Xendor 8.1). Используйте "{% xendor_page id as object %}"')
+    
+    try:
+        return Page.objects.get(pk=id)
+    except Page.DoesNotExist:
+        return '#'
+
+
+@register.inclusion_tag('tags/page_content.html')
+def get_page_content_by_id(id):
+    if settings.DEBUG:
+        raise NotImplementedError(u'get_page_content_by_id больше не поддерживается (с версии Xendor 8.1). Используйте "{% xendor_page id as object %}"')
+    
+    try:
+        return {'page' : Page.objects.get(pk=int(id))}
+    except Page.DoesNotExist:
+        return {}
