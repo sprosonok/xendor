@@ -3,6 +3,7 @@
 
 from django import template
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.template.defaultfilters import stringfilter
 from django.utils.html import mark_safe
 
@@ -29,7 +30,7 @@ def fragment(fragment_name):
         
     return {'fragmaent': fragment}
 
-
+login_required
 @register.assignment_tag
 def subpages(page, smart_menu = False):
     """Создает в контексте шаблона переменную, использование: {% subpages for page as subpage_list %}

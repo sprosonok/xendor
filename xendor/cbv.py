@@ -191,6 +191,30 @@ class ListByTreeObjectSlugMixin(ListByObjectSlugMixin):
             return super(ListByObjectSlugMixin, self).get_queryset()
 
 
+class SubtreeByObjectSlugMixin(ListView):
+    """Миксин строящий список чайлдов нода по слагу нода
+        в списке наследования ставить в конце!
+    """
+
+    slugified_object = None
+
+    def get(self, request, *args, **kwargs):
+        self.slugified_object = get_object_or_404(self.model, slug=self.kwargs.get('slug'))
+
+        return super(SubtreeByObjectSlugMixin, self).get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(SubtreeByObjectSlugMixin, self).get_context_data(**kwargs)
+        context.update({
+            'object': self.slugified_object
+        })
+        return context
+
+    def get_queryset(self):
+
+        return self.slugified_object.get_children()
+
+
 class PaginatedListMixin(ListView):
     """Класс с преднастроенным пагинатором
         вызов постранички в шаблоне: {{ paginator.render }}
