@@ -95,7 +95,7 @@ def thumbnail(file, size='200;200'):
             image = image_process(image, width, height, opt)
             
             image.save(miniature_filename, image.format)
-        except IOError:
+        except: #IOError
             filename = os.path.join(settings.MEDIA_ROOT, settings.NO_IMG_PATH)
             basename, format = settings.NO_IMG_PATH.rsplit('.', 1)
             
@@ -108,8 +108,13 @@ def thumbnail(file, size='200;200'):
             miniature_filename = os.path.join(settings.MEDIA_ROOT, miniature)
             miniature_url = os.path.join(settings.MEDIA_URL, miniature)
             
-            if not os.path.exists(miniature_filename):            
-                image = Image.open(filename)
+            if not os.path.exists(miniature_filename):
+                try:            
+                    image = Image.open(filename)
+                except IOError:
+                    if settings.DEBUG:
+                        raise IOError(u"Сan't find stuff file (check NO_IMG_PATH in settings.py)")
+                    return miniature_url
                 
                 image = image_process(image, width, height, opt)
                 

@@ -284,6 +284,7 @@ def get_setting(name):
 
 @register.assignment_tag
 def xendor_page(id):
+    """ Возвращает страницу по ID или слагу """
     try:
         return Page.objects.get(pk=int(id))
     except Page.DoesNotExist:
