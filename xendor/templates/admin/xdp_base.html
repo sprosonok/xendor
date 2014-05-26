@@ -1,0 +1,71 @@
+{% load admin_static %}{% load url from future %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
+	<head>
+		<title>{% block title %}{% endblock %}</title>
+		<link href="/static/css/upload/bootstrap_admin.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" type="text/css" href="/static/admin/css/base.css" />
+		<link rel="stylesheet" type="text/css" href="/static/admin/css/widgets.css" />
+		
+		<script src="/static/js/upload/jquery.min.js" type="text/javascript"></script>
+		<script src="/static/js/bootstrap.js" type="text/javascript"></script>
+		
+		<script type="text/javascript">window.__admin_media_prefix__ = "{% filter escapejs %}{% static "admin/" %}{% endfilter %}";</script>
+		
+		{% block extrastyle %}
+		{% endblock %}
+		
+		{% block extrahead %}
+		{% endblock %}
+	</head>
+	{% load i18n %}
+	{% load url from future %}
+	
+	<body class="{% block bodyclass %}{% endblock %}"> {% block body %}
+		<br class="clear"/>
+		
+		{% block nav-global %}
+			{% if not is_popup and request.user.is_active %}
+				{# admin_tools_render_menu #}
+			{% endif %}
+		{% endblock %}
+		
+		{% block breadcrumbs %}
+		{% endblock %}
+		
+		{% block messages %}
+	        {% if messages %}
+		        <ul class="messagelist" style="margin-left: 0; margin-top: -17px;list-style: none;">
+		        	{% for message in messages %}
+		          		<li{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>{{ message }}</li>
+		        	{% endfor %}
+		        </ul>
+	        {% endif %}
+    	{% endblock messages %}
+    	
+    	<div id="content" class="{% block coltype %}colM{% endblock %}" style="min-height: 620px;">
+	        {% block pretitle %}{% endblock %}
+	        
+	        {% block content_title %}{% if title %}<h2 style="">{{ title }}</h2>{% endif %}{% endblock %}
+	        
+	        {% block content %}
+	        	{% block object-tools %}{% endblock %}
+	        	{{ content }}
+	        {% endblock %}
+	        
+	        {% block sidebar %}{% endblock %}
+	        
+	        <br class="clear" />
+	        
+	    </div>
+    
+    {% endblock body %}
+    
+ 		<div style="position: static; margin: 20px; ">
+        	<span class="label label-inverse">
+	        	ver 6.0
+	        	«Xendor»
+        	</span>
+        </div>
+	</body>
+</html>
