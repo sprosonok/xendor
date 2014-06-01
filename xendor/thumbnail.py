@@ -44,6 +44,19 @@ def image_process(image, width, height, opt = []):
                 watermark.thumbnail([image.size[0]/2, image.size[1]/2], Image.ANTIALIAS)
     
                 image.paste(watermark,(
+                    image.size[0]-watermark.size[0] - WATERMARK_X_SHIFT,
+                    image.size[1]-watermark.size[1] - WATERMARK_Y_SHIFT), watermark)
+    
+            except IOError:
+                pass
+
+        elif effect == 'wtm-center':
+            try:
+                watermark = Image.open(os.path.join(settings.MEDIA_ROOT, 'watermark/watermark.png')) #open the filter
+    
+                watermark.thumbnail([image.size[0]/2, image.size[1]/2], Image.ANTIALIAS)
+    
+                image.paste(watermark,(
                     image.size[0]-watermark.size[0] - (image.size[0]-watermark.size[0])/2,
                     image.size[1]-watermark.size[1] - (image.size[1]-watermark.size[1])/2), watermark)
     
