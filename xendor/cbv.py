@@ -165,7 +165,10 @@ class ListByObjectSlugMixin(ListView):
                 'object': self.slugified_object
             })
         return context
-
+    
+    def get_object(self):
+        return self.slugified_object
+    
     def get_queryset(self):
         if self.slugified_object:
             call_dict = {self.slugified_model.__name__.lower(): self.slugified_object}

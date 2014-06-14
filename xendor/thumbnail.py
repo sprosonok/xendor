@@ -129,6 +129,8 @@ def thumbnail(file, size='200;200'):
                         raise IOError(u"Сan't find stuff file (check NO_IMG_PATH in settings.py)")
                     return miniature_url
                 
+                opt = ['blank',]
+                
                 image = image_process(image, width, height, opt)
                 
                 image.save(miniature_filename, image.format)
