@@ -176,6 +176,41 @@ class ListByObjectSlugMixin(ListView):
         else:
             return super(ListByObjectSlugMixin, self).get_queryset()
 
+class ListByObjectPkMixin(ListView):
+    """Класс строящий список по внешнему ключу (ForeignKey) объекта передаваемого по ID
+        помещает в контекст объект слагификации в переменной object
+        фильтрует список по этому объекту
+        необходимые параметры:
+        slugified_model = <класс модели указанный в ForeignKey>
+        поле ключа должно быть именем класса модели на которую указывает ключ в ловеркейсе
+    """
+
+    pk_model = None
+
+    def get(self, request, *args, **kwargs):
+        if self.pk_model:
+            self.pk_object = get_object_or_404(self.pk_model, pk=self.kwargs.get('pk'))
+        else:
+            self.pk_object = None
+        return super(ListByObjectPkMixin, self).get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(ListByObjectPkMixin, self).get_context_data(**kwargs)
+        if self.pk_object:
+            context.update({
+                'object': self.pk_object
+            })
+        return context
+    
+    def get_object(self):
+        return self.pk_object
+    
+    def get_queryset(self):
+        if self.pk_object:
+            call_dict = {self.pk_model.__name__.lower(): self.pk_object}
+            return super(ListByObjectPkMixin, self).get_queryset().filter(**call_dict)
+        else:
+            return super(ListByObjectPkMixin, self).get_queryset()
 
 class ListByTreeObjectSlugMixin(ListByObjectSlugMixin):
     """
