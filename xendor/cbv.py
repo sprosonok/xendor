@@ -105,7 +105,7 @@ class SortingMixin(ListView):
                     break
                 else:
                     pars.append(unicode(self.request.GET.get(field[0]) == 'desc' and '-' or '') + field[0])
-
+        
         return super(SortingMixin, self).get_queryset().order_by(*pars)
 
     def get_context_data(self, **kwargs):
