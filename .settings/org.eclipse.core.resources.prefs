@@ -6,6 +6,7 @@ encoding//xendor/admin.py=utf-8
 encoding//xendor/admin_utils.py=utf-8
 encoding//xendor/cbv.py=utf-8
 encoding//xendor/forms.py=utf-8
+encoding//xendor/menu.py=utf-8
 encoding//xendor/middleware.py=utf-8
 encoding//xendor/models.py=utf-8
 encoding//xendor/settings.py=utf-8

@@ -2,8 +2,9 @@
 
 def _formater_1000(value):
     """Форматирование больших чисел в более читабельный вид"""
-    
     try:
+        if not '.' in value:
+            value = value + '.0'
         return (lambda h, q:
                 (lambda s:
                  ''.join(reversed(['&nbsp;' * int(not((i + 1) % 3) and i != 0) + s[len(s) - i - 1] for i in xrange(len(s))]))

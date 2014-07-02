@@ -82,3 +82,9 @@
     width: 60px;
   }
 }
+
+.btn-group .btn{
+	min-width: 130px;
+	min-height: 34px;
+	margin-right: 0;
+}

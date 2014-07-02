@@ -253,19 +253,6 @@ def xdummy(value, arg):
     
     return xendor_dummy(value, arg)
 
-@register.inclusion_tag('tags/insert-get-parameter.html', takes_context=True)
-def insert_get_parameter(context, value, name_get_parameter='page', exclude_vars=''):
-    """мегаполезная шняга: формирует ссцыль для постранички, не трогает остальные get-параметры если они есть"""
-
-    exclude_vars = exclude_vars.split(',')
-    context.update({
-        'page_string': '?' + '&'.join(reduce(lambda q, h: h[0] not in exclude_vars and q.append(unicode(h[0]) + '=' + unicode(h[1])) or q,
-                (lambda d, p:
-                    d.update({name_get_parameter: p}) or d
-                )(dict(context['request'].GET.items()), value).items(), []))
-    })
-    return context
-
 @register.simple_tag
 def admin_image_upload_js():
     return utils.uploader_js
@@ -285,6 +272,7 @@ def get_setting(name):
 
 @register.assignment_tag
 def xendor_page(id):
+    """ Возвращает страницу по ID или слагу """
     try:
         return Page.objects.get(pk=int(id))
     except Page.DoesNotExist:
@@ -316,9 +304,71 @@ def xcontent_status():
     return get_completed()
 
 
+@register.inclusion_tag('tags/get-parameter.html', takes_context=True)
+def get_add(context, value, name_get_parameter='page', exclude_vars=''):
+    """
+    мегаполезная шняга: формирует ссцыль для постранички, не трогает остальные get-параметры если они есть"""
+
+    exclude_vars = exclude_vars.split(',')
+    context.update({
+        'value': '?' + '&'.join(reduce(lambda q, h: h[0] not in exclude_vars and q.append(unicode(h[0]) + '=' + unicode(h[1])) or q,
+                (lambda d, p:
+                    d.update({name_get_parameter: p}) or d
+                )(dict(context['request'].GET.items()), value).items(), []))
+    })
+    return context
+
+
+@register.inclusion_tag('tags/get-parameter.html', takes_context=True)
+def get_has(context, key_value, success_template, error_template = ''):
+    """
+    Если в GET есть ключ key со значением value или просто есть то подставляется success иначе error
+    
+      синтаксис {% get_has 'key;value' 'success' 'error' %}
+      или       {% get_has 'key' 'success' %}
+    """
+    
+    if ';' in key_value:
+        key, value = key_value.split(';')
+    else:
+        key = key_value
+        value = None
+    
+    gets = dict(context['request'].GET.items())
+    success = False
+    
+    if key in gets:
+        if value:
+            if gets.get(key) == value:
+                success = True
+        else:
+            success = True
+    
+    context.update({
+            'value': success and success_template or error_template,
+        })
+        
+    return context
+
+
 ##############################################
 # Функции к удалению с версии 9.0
 ##############################################
+
+@register.inclusion_tag('tags/insert-get-parameter.html', takes_context=True)
+def insert_get_parameter(context, value, name_get_parameter='page', exclude_vars=''):
+    """
+    DEPRICATED!
+    мегаполезная шняга: формирует ссцыль для постранички, не трогает остальные get-параметры если они есть"""
+
+    exclude_vars = exclude_vars.split(',')
+    context.update({
+        'page_string': '?' + '&'.join(reduce(lambda q, h: h[0] not in exclude_vars and q.append(unicode(h[0]) + '=' + unicode(h[1])) or q,
+                (lambda d, p:
+                    d.update({name_get_parameter: p}) or d
+                )(dict(context['request'].GET.items()), value).items(), []))
+    })
+    return context
 
 @register.filter
 @stringfilter

@@ -11,6 +11,8 @@ from django.core.validators import RegexValidator
 from django.conf import settings
 
 from mptt.models import TreeForeignKey, MPTTModel
+from south.modelsinspector import add_introspection_rules
+
 from tinymce.models import HTMLField
 
 from xendor.utils import generate_slug
@@ -18,6 +20,10 @@ from xendor.utils import generate_slug
 slug_re = re.compile(r'^[-a-zA-Z0-9_/]+$')
 validate_slug = RegexValidator(slug_re, _("Enter a valid 'slug' consisting of letters, numbers, underscores or hyphens."), 'invalid')
 
+# Это нужно для корректной работы south. К слову говоря, по хорошему нужно еще
+# прописать правила, но это на усмотрение того, кому это нужно
+
+add_introspection_rules([], ['^xendor\.models\.XendorSlugField'])
 
 class XendorFormSlugField(forms.CharField):
     default_validators = [validate_slug]
@@ -46,7 +52,6 @@ class XendorSlugField(models.CharField):
         defaults.update(kwargs)
         return super(XendorSlugField, self).formfield(**defaults)
 
-
 class Page(MPTTModel):
 
     parent = TreeForeignKey(u'self', verbose_name=u'Родитель', null=True, blank=True, related_name=u'children')
@@ -55,9 +60,9 @@ class Page(MPTTModel):
     menu_title = models.CharField(u'Заголовок пункта меню', max_length = 255, blank = True, default='')
     
     content = HTMLField(u'Текст матетериала', blank=True, null=True)
-    visible = models.BooleanField(default=True)
+    visible = models.BooleanField(u'Страница опубликована', default=True)
     in_menu = models.BooleanField(default=True)
-    is_main = models.BooleanField(default=False)
+    is_main = models.BooleanField(u'Начинать главное меню отсюда', default=False)
     app_extension = models.CharField(max_length=255, null=False, blank=True, default='')
     slug = XendorSlugField(u'Синоним страницы', max_length = 255, null=True, unique=True, blank = True)
     template = models.CharField(u'Заданный шаблон', max_length = 255, blank = True, null=True)

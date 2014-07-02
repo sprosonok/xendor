@@ -44,6 +44,19 @@ def image_process(image, width, height, opt = []):
                 watermark.thumbnail([image.size[0]/2, image.size[1]/2], Image.ANTIALIAS)
     
                 image.paste(watermark,(
+                    image.size[0]-watermark.size[0] - WATERMARK_X_SHIFT,
+                    image.size[1]-watermark.size[1] - WATERMARK_Y_SHIFT), watermark)
+    
+            except IOError:
+                pass
+
+        elif effect == 'wtm-center':
+            try:
+                watermark = Image.open(os.path.join(settings.MEDIA_ROOT, 'watermark/watermark.png')) #open the filter
+    
+                watermark.thumbnail([image.size[0]/2, image.size[1]/2], Image.ANTIALIAS)
+    
+                image.paste(watermark,(
                     image.size[0]-watermark.size[0] - (image.size[0]-watermark.size[0])/2,
                     image.size[1]-watermark.size[1] - (image.size[1]-watermark.size[1])/2), watermark)
     
@@ -95,7 +108,7 @@ def thumbnail(file, size='200;200'):
             image = image_process(image, width, height, opt)
             
             image.save(miniature_filename, image.format)
-        except IOError:
+        except: #IOError
             filename = os.path.join(settings.MEDIA_ROOT, settings.NO_IMG_PATH)
             basename, format = settings.NO_IMG_PATH.rsplit('.', 1)
             
@@ -108,8 +121,15 @@ def thumbnail(file, size='200;200'):
             miniature_filename = os.path.join(settings.MEDIA_ROOT, miniature)
             miniature_url = os.path.join(settings.MEDIA_URL, miniature)
             
-            if not os.path.exists(miniature_filename):            
-                image = Image.open(filename)
+            if not os.path.exists(miniature_filename):
+                try:            
+                    image = Image.open(filename)
+                except IOError:
+                    if settings.DEBUG:
+                        raise IOError(u"Сan't find stuff file (check NO_IMG_PATH in settings.py)")
+                    return miniature_url
+                
+                opt = ['blank',]
                 
                 image = image_process(image, width, height, opt)
                 
