@@ -92,7 +92,37 @@ class RefererRedirectWithMessage(RedirectView):
 
 
 class SortingMixin(ListView):
-    """Миксин сортировки по полям"""
+    """Миксин сортировки по полям
+        хуй его знает как оно работает, но нужно задать поля для сортировки вот так:
+        sort_field = (('price', 'по цене', True), ('name', 'по названию', True), )
+
+        а в шаблоне нужно написать что-то вроде:
+        {% load xendor_tags %}
+
+        {% if sorting|length > 0 %}
+
+        {% endif %}
+
+        {% for field in sorting %}
+            {% if field.3 %}
+                {% if field.1 == 'asc' %}
+                    &uarr;
+                {% endif %}
+
+                {% if field.1 == 'desc' %}
+                    &darr;
+                {% endif %}
+
+            {% endif %}
+                <a href="{% insert_get_parameter field.1 field.0 %}" class="{{ field.3 }} {% if field.3 %}{{ field.1 }}{% endif %}">{{ field.2 }}</a>
+            {% if field.3 %}
+                <a href="{% insert_get_parameter field.1 field.0 field.0 %}" class="del-link"><sup>X</sup></a>
+            {% endif %}
+            {% if not forloop.last %} | {% endif %}
+        {% endfor %}
+
+        сортировка получилась мульти, надо наверное дописать на обычную, но блин лень
+    """
 
     sort_field = ()
 
@@ -113,7 +143,8 @@ class SortingMixin(ListView):
         context = super(SortingMixin, self).get_context_data(**kwargs)
 
         context.update({
-            'sorting': [(f[0], self.request.GET.get(f[0]) == 'asc' and 'desc' or 'asc', f[1], self.request.GET.get(f[0]) and 'active' or '') for f in self.sort_field]
+            'sorting': [(f[0], self.request.GET.get(f[0]) == 'asc' and 'desc' or 'asc', f[1],
+                         self.request.GET.get(f[0]) and 'active' or '') for f in self.sort_field]
         })
 
         return context
