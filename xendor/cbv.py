@@ -91,7 +91,7 @@ class RefererRedirectWithMessage(RedirectView):
         return super(RefererRedirectWithMessage, self).post(request, *args, **kwargs)
 
 
-class SortingMixin(ListView):
+class MultiSortingMixin(ListView):
     """Миксин сортировки по полям
         хуй его знает как оно работает, но нужно задать поля для сортировки вот так:
         sort_field = (('price', 'по цене', True), ('name', 'по названию', True), )
@@ -135,7 +135,7 @@ class SortingMixin(ListView):
                     break
                 else:
                     pars.append(unicode(self.request.GET.get(field[0]) == 'desc' and '-' or '') + field[0])
-        
+
         return super(SortingMixin, self).get_queryset().order_by(*pars)
 
     def get_context_data(self, **kwargs):
@@ -145,6 +145,68 @@ class SortingMixin(ListView):
         context.update({
             'sorting': [(f[0], self.request.GET.get(f[0]) == 'asc' and 'desc' or 'asc', f[1],
                          self.request.GET.get(f[0]) and 'active' or '') for f in self.sort_field]
+        })
+
+        return context
+
+
+class SortingMixin(ListView):
+    """Миксин сортировки по полям
+        хуй его знает как оно работает, но нужно задать поля для сортировки вот так:
+        sort_field = (('price', 'по цене', True), ('name', 'по названию', True), )
+
+        а в шаблоне нужно написать что-то вроде:
+        {% load xendor_tags %}
+
+        {% if sorting|length > 0 %}
+            <ul class="list-inline list-unstyled sorting">
+                <li>Сортировка: </li>
+                {% for field in sorting %}
+                    <li class="{{ field.3 }} {% if field.3 %}{{ field.1 }}{% endif %}">
+                        <a href="{% insert_get_parameter field.1 field.0 field.4 %}">
+                            {{ field.2 }} <span>{% if field.3 %}
+                                {% if field.1 == 'asc' %}
+                                    &uarr;
+                                {% endif %}
+
+                                {% if field.1 == 'desc' %}
+                                    &darr;
+                                {% endif %}
+
+                            {% endif %}
+                        </span></a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    """
+
+    sort_field = ()
+
+    def get_queryset(self):
+        pars = []
+        for field in self.sort_field:
+            if self.request.GET.get(field[0]):
+                if field[2]:
+                    pars = [unicode(self.request.GET.get(field[0]) == 'desc' and '-' or '') + field[0]]
+                    break
+                else:
+                    pars.append(unicode(self.request.GET.get(field[0]) == 'desc' and '-' or '') + field[0])
+
+        return super(SortingMixin, self).get_queryset().order_by(*pars)
+
+    def get_context_data(self, **kwargs):
+
+        context = super(SortingMixin, self).get_context_data(**kwargs)
+
+        context.update({
+            'sorting': [(
+                            f[0],                                                          #название поля модели
+                            self.request.GET.get(f[0]) == 'asc' and 'desc' or 'asc',       #порядок сортировки
+                            f[1],                                                          #человекопонятное название
+                            self.request.GET.get(f[0]) and 'active' or '',                 #статус фильтра
+                            ','.join([i[0] for i in self.sort_field if i != f])            #поля для исключения
+                        ) for f in self.sort_field]
         })
 
         return context
