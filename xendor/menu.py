@@ -83,6 +83,7 @@ class Menu(object):
 
             if parent_structure_node:
                 self.nodes = self._init_nodes(parent_structure_node)
+                self.parent_structure_node = parent_structure_node
             else:
                 raise self.MenuException('Ошибка меню! В структуре сайта отсутствует элемент указанный как корневой.')
 
