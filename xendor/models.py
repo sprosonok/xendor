@@ -154,11 +154,11 @@ class Page(MPTTModel):
                 self.is_main = True
         
         if getattr(settings, 'AUTO_CONTENT', False) and getattr(settings, 'DEBUG', False) and not self.content:
-            href = 'http://referats.yandex.ru/marketing.xml'
+            href = 'http://referats.yandex.ru/referats/?t=astronomy+geology+gyroscope+literature+marketing+mathematics+music+polit+agrobiologia+law+psychology+geography+physics+philosophy+chemistry+estetica&s=79610'
             
             html = urllib.urlopen(href).read()
             
-            html = html.split('</h1>')[1].split('</div>')[0]
+            html = html.split('</strong>')[1].split('</div><div class="referats__share">')[0]
             
             self.content = html
         

@@ -28,8 +28,13 @@ def image_process(image, width, height, opt = []):
             else:
                 image = image.crop([int(1.0*w/2-1.0*w*scale/2), 0, int(1.0*w/2+1.0*w*scale/2), h-1])
             
-        elif effect == 'blank':
-            blank = Image.new('RGBA', [width, height], (255, 255, 255, 0))
+        elif 'blank' in effect:
+            opt = effect.split(':')
+            if len(opt) == 4:
+                blank = Image.new('RGBA', [width, height], (int(opt[1]), int(opt[2]), int(opt[3]), 0))
+            else:
+                blank = Image.new('RGBA', [width, height], (255, 255, 255, 0))
+            
             image.thumbnail((width, height), Image.ANTIALIAS)
             w,h = image.size
             
