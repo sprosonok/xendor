@@ -182,9 +182,13 @@ class SortingMixin(ListView):
     """
 
     sort_field = ()
+    default_sorting = ('', False)
 
     def get_queryset(self):
-        pars = []
+        if self.default_sorting:
+            pars = ['-' * int(self.default_sorting[1]) + self.default_sorting[0]]
+        else:
+            pars = []
         for field in self.sort_field:
             if self.request.GET.get(field[0]):
                 if field[2]:
@@ -192,19 +196,17 @@ class SortingMixin(ListView):
                     break
                 else:
                     pars.append(unicode(self.request.GET.get(field[0]) == 'desc' and '-' or '') + field[0])
-
         return super(SortingMixin, self).get_queryset().order_by(*pars)
 
     def get_context_data(self, **kwargs):
-
         context = super(SortingMixin, self).get_context_data(**kwargs)
-
+        default = not bool([f for f in self.sort_field if self.request.GET.get(f[0])])
         context.update({
             'sorting': [(
                             f[0],                                                          #название поля модели
-                            self.request.GET.get(f[0]) == 'asc' and 'desc' or 'asc',       #порядок сортировки
+                            (default and not self.default_sorting[1] or self.request.GET.get(f[0]) == 'asc') and 'desc' or 'asc',       #порядок сортировки
                             f[1],                                                          #человекопонятное название
-                            self.request.GET.get(f[0]) and 'active' or '',                 #статус фильтра
+                            (default and f[0] in self.default_sorting or self.request.GET.get(f[0])) and 'active' or '',                 #статус фильтра
                             ','.join([i[0] for i in self.sort_field if i != f])            #поля для исключения
                         ) for f in self.sort_field]
         })
