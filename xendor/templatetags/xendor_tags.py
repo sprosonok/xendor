@@ -27,26 +27,26 @@ def fragment(fragment_name):
         fragment = Fragment.objects.get(name=fragment_name)
     except Fragment.DoesNotExist:
         fragment = ''
-        
+
     return {'fragmaent': fragment}
 
-login_required
+
 @register.assignment_tag
-def subpages(page, smart_menu = False):
+def subpages(page, smart_menu=False):
     """Создает в контексте шаблона переменную, использование: {% subpages for page as subpage_list %}
 
         а еще какой-то долбоеб че-то там добавил при этом потер нахуй все коменты и не написал че оно делает,
         ебать этого гандона грязной шваброй!
     """
-    
+
     if type(page) == int:
         page = Page.objects.get(pk=int(page))
-        
+
     pages = page.get_children().filter(visible=True)
-    
+
     if bool(smart_menu) and page.level > 1 and pages.count() == 0:
         pages = page.parent.get_children().filter(visible=True)
-    
+
     return pages
 
 
@@ -54,13 +54,13 @@ def subpages(page, smart_menu = False):
 def menu(context, params="", template='menu/menu.html'):
     """Рендер меню"""
 
-    #проверка наличия контекста
+    # проверка наличия контекста
     try:
         request = context['request']
     except KeyError:
         return {'template': 'empty.html'}
-    
-    #инстанцирование класса меню
+
+    # инстанцирование класса меню
     try:
         current_url = XendorSettings().get('activated_node') or request.get_full_path().split('?')[0]
         menu = Menu(current_url, parameters=_render_pars(params))
@@ -86,7 +86,7 @@ def level_menu(context, nodes=[], template='menu/level.html'):
 @register.inclusion_tag('dummy.html', takes_context=True)
 def breadcrumbs(context, start_level=0, template='menu/breadcrumbs.html'):
     """Рендер крошки, start_level - уровень, с которого следует начинать"""
-    
+
     try:
         request = context['request']
     except KeyError:
@@ -185,6 +185,7 @@ def metadescription(context, template='menu/metadescription.html'):
 
     return context
 
+
 @register.inclusion_tag('dummy.html', takes_context=True)
 def keywords(context, template='menu/metakeywords.html'):
     """Вывод метатега keywords
@@ -234,8 +235,9 @@ def xthumbnail(value, arg):
        blank – заполняет белым или прозрачным вписывая в заданный размер
        wtm – добавляет ватермарк
     """
-    
+
     return thumbnail(value, arg)
+
 
 @register.filter
 @stringfilter
@@ -250,8 +252,33 @@ def xdummy(value, arg):
        
        Пример: {{1|xdummy:'100;100;#2976bb;#f6f6f6'}}
     """
-    
+
     return xendor_dummy(value, arg)
+
+@register.simple_tag
+def media_root():
+    return getattr(settings, 'MEDIA_ROOT', '/')
+
+@register.filter
+@stringfilter
+def no_media(value):
+    return value.replace('/media/', '/')
+
+
+@register.filter
+@stringfilter
+def base64(value):
+    """
+       Превращает картинку из пути к файлу в base64 аналог
+
+       TEST MODE!!!
+    """
+    value = settings.MEDIA_ROOT + value
+    img = open(value, "rb")
+    data = img.read()
+
+    return "data:image/jpg;base64,%s" % data.encode('base64')
+
 
 @register.simple_tag
 def admin_image_upload_js():
@@ -290,17 +317,18 @@ def x1000(value):
 
     return mark_safe(utils._formater_1000(value))
 
+
 @register.simple_tag
 def xicon(icon):
     """ Render an icon """
-    
+
     return '<span class="glyphicon glyphicon-{icon}"></span>'.format(icon=icon)
 
 
 @register.assignment_tag
 def xcontent_status():
     """ возвращает то насколько сайт наполнен (требует конфигурирования) """
-    
+
     return get_completed()
 
 
@@ -311,49 +339,50 @@ def get_add(context, value, name_get_parameter='page', exclude_vars=''):
 
     exclude_vars = exclude_vars.split(',')
     context.update({
-        'value': '?' + '&'.join(reduce(lambda q, h: h[0] not in exclude_vars and q.append(unicode(h[0]) + '=' + unicode(h[1])) or q,
-                (lambda d, p:
+        'value': '?' + '&'.join(
+            reduce(lambda q, h: h[0] not in exclude_vars and q.append(unicode(h[0]) + '=' + unicode(h[1])) or q,
+                   (lambda d, p:
                     d.update({name_get_parameter: p}) or d
-                )(dict(context['request'].GET.items()), value).items(), []))
+                   )(dict(context['request'].GET.items()), value).items(), []))
     })
     return context
 
 
 @register.inclusion_tag('tags/get-parameter.html', takes_context=True)
-def get_has(context, key_value, success_template, error_template = ''):
+def get_has(context, key_value, success_template, error_template=''):
     """
     Если в GET есть ключ key со значением value или просто есть то подставляется success иначе error
     
       синтаксис {% get_has 'key;value' 'success' 'error' %}
       или       {% get_has 'key' 'success' %}
     """
-    
+
     if ';' in key_value:
         key, value = key_value.split(';')
     else:
         key = key_value
         value = None
-    
+
     gets = dict(context['request'].GET.items())
     success = False
-    
+
     if key in gets:
         if value:
             if gets.get(key) == value:
                 success = True
         else:
             success = True
-    
+
     context.update({
-            'value': success and success_template or error_template,
-        })
-        
+        'value': success and success_template or error_template,
+    })
+
     return context
 
 
-##############################################
+# #############################################
 # Функции к удалению с версии 9.0
-##############################################
+# #############################################
 
 @register.inclusion_tag('tags/insert-get-parameter.html', takes_context=True)
 def insert_get_parameter(context, value, name_get_parameter='page', exclude_vars=''):
@@ -363,12 +392,14 @@ def insert_get_parameter(context, value, name_get_parameter='page', exclude_vars
 
     exclude_vars = exclude_vars.split(',')
     context.update({
-        'page_string': '?' + '&'.join(reduce(lambda q, h: h[0] not in exclude_vars and q.append(unicode(h[0]) + '=' + unicode(h[1])) or q,
-                (lambda d, p:
+        'page_string': '?' + '&'.join(
+            reduce(lambda q, h: h[0] not in exclude_vars and q.append(unicode(h[0]) + '=' + unicode(h[1])) or q,
+                   (lambda d, p:
                     d.update({name_get_parameter: p}) or d
-                )(dict(context['request'].GET.items()), value).items(), []))
+                   )(dict(context['request'].GET.items()), value).items(), []))
     })
     return context
+
 
 @register.filter
 @stringfilter
@@ -376,28 +407,32 @@ def x1000_filter(value):
     """
     DEPRICATED!
     Форматирует число добавляя пробелы для лучшей читабельности"""
-    
+
     if settings.DEBUG:
         raise NotImplementedError(u'x1000_filter больше не поддерживается (с версии Xendor 8.1). Используйте "x1000"')
     return x1000(value)
+
 
 @register.filter
 @stringfilter
 def get_page_link_by_id(id):
     if settings.DEBUG:
-        raise NotImplementedError(u'get_page_link_by_id больше не поддерживается (с версии Xendor 8.1). Используйте "{% xendor_page id as object %}"')
-    
+        raise NotImplementedError(
+            u'get_page_link_by_id больше не поддерживается (с версии Xendor 8.1). Используйте "{% xendor_page id as object %}"')
+
     try:
         return Page.objects.get(pk=id).get_absolute_url()
     except Page.DoesNotExist:
         return '#'
 
+
 @register.filter
 @stringfilter
 def get_page_by_id(id):
     if settings.DEBUG:
-        raise NotImplementedError(u'get_page_by_id больше не поддерживается (с версии Xendor 8.1). Используйте "{% xendor_page id as object %}"')
-    
+        raise NotImplementedError(
+            u'get_page_by_id больше не поддерживается (с версии Xendor 8.1). Используйте "{% xendor_page id as object %}"')
+
     try:
         return Page.objects.get(pk=id)
     except Page.DoesNotExist:
@@ -407,9 +442,10 @@ def get_page_by_id(id):
 @register.inclusion_tag('tags/page_content.html')
 def get_page_content_by_id(id):
     if settings.DEBUG:
-        raise NotImplementedError(u'get_page_content_by_id больше не поддерживается (с версии Xendor 8.1). Используйте "{% xendor_page id as object %}"')
-    
+        raise NotImplementedError(
+            u'get_page_content_by_id больше не поддерживается (с версии Xendor 8.1). Используйте "{% xendor_page id as object %}"')
+
     try:
-        return {'page' : Page.objects.get(pk=int(id))}
+        return {'page': Page.objects.get(pk=int(id))}
     except Page.DoesNotExist:
         return {}
