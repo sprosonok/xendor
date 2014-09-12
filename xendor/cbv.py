@@ -196,7 +196,10 @@ class SortingMixin(ListView):
                     break
                 else:
                     pars.append(unicode(self.request.GET.get(field[0]) == 'desc' and '-' or '') + field[0])
-        return super(SortingMixin, self).get_queryset().order_by(*pars)
+        if len(*pars)>0:
+            return super(SortingMixin, self).get_queryset().order_by(*pars)
+        else:
+            return super(SortingMixin, self).get_queryset()
 
     def get_context_data(self, **kwargs):
         context = super(SortingMixin, self).get_context_data(**kwargs)
@@ -659,7 +662,6 @@ class ImageAdmin(object):
             return context
 
         def post(self, request, *args, **kwargs):
-            print request.POST
             self.object = None
             self.item = get_object_or_404(self.item_class, pk=int(args[0]))
             form_class = self.get_form_class()
