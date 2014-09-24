@@ -54,7 +54,7 @@ def subpages(page, smart_menu=False):
 def level_active(nodes=[]):
     """Проверяет активен ли уровень меню (есть ли хотя бы один активный элемент)"""
 
-    return bool([n for n in nodes if n.active])
+    return bool([n for n in nodes if n['active']])
 
 
 @register.inclusion_tag('dummy.html', takes_context=True)
