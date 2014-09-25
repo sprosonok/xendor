@@ -6,6 +6,7 @@ from xendor.forms import PageAdminForm
 from xendor.tree_admin import XDP17TreeModelAdmin
 from xendor.models import Page, Fragment, Setting
 
+
 class PageAdmin(XDP17TreeModelAdmin):
     admin_label = u'Управление контентом'
 

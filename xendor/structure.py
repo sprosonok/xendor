@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
-
+from django.utils import translation
 from django.conf import settings
 from django.db.models.signals import post_delete, post_save
 
@@ -10,6 +10,29 @@ try:
     NEED_REGENERATE_MODELS = settings.NEED_REGENERATE_MODELS
 except AttributeError:
     NEED_REGENERATE_MODELS = ('Page',)
+
+
+class LanguageValue(object):
+
+    def __init__(self, obj, attr):
+        self.name = attr
+        self.values = {}
+        for lang in settings.LANGUAGES:
+            if hasattr(obj, attr + '_' + lang[0]):
+                self.values[lang[0]] = getattr(obj, attr + '_' + lang[0])
+
+        self.default = getattr(obj, attr)
+
+    def __unicode__(self):
+
+        cur_language = translation.get_language()
+        return self.values.get(cur_language, None) or self.default
+
+    def __str__(self):
+        return self.__unicode__()
+
+    def __nonzero__(self):
+        return bool(self.__unicode__())
 
 
 class StructureNode:
@@ -171,7 +194,7 @@ class Structure(object):
 
         return cls._instance
 
-    def _generate(self, regenerate = False):
+    def _generate(self, regenerate=False):
         """Генерирует базовую структуру сайта (внутренний метод)"""
 
         self.tree = StructureNode()
@@ -190,18 +213,18 @@ class Structure(object):
         """Генерирует подменю для текущего узла дерева"""
 
         if page.is_main:
-            self.tree.title = page.title
-            self.tree.meta_title = page.meta_title
-            self.tree.meta_description = page.meta_description
+            self.tree.title = LanguageValue(page, 'menu_title') or LanguageValue(page, 'title')
+            self.tree.meta_title = LanguageValue(page, 'meta_title') or LanguageValue(page, 'title')
+            self.tree.meta_description = LanguageValue(page, 'meta_description') or LanguageValue(page, 'title')
             self.tree.meta_keywords = page.meta_keywords
 
         node = StructureNode(
-            title=page.menu_title or page.title,
+            title=LanguageValue(page, 'menu_title') or LanguageValue(page, 'title'),
             url=page.menu_url or page.get_absolute_url,
             in_menu=page.in_menu,
             children=[],
-            meta_title=page.meta_title,
-            meta_description=page.meta_description,
+            meta_title=LanguageValue(page, 'meta_title') or LanguageValue(page, 'title'),
+            meta_description=LanguageValue(page, 'meta_description') or LanguageValue(page, 'title'),
             meta_keywords=page.meta_keywords,
             parameters=page.parameters
         )
