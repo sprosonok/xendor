@@ -3,11 +3,11 @@ from django.contrib import admin
 from django.conf import settings
 
 from xendor.forms import PageAdminForm
-from xendor.tree_admin import XDP17TreeModelAdmin
+#from xendor.tree_admin import XDP17TreeModelAdmin
 from xendor.models import Page, Fragment, Setting
 
 
-class PageAdmin(XDP17TreeModelAdmin):
+class PageAdmin(admin.ModelAdmin):
     admin_label = u'Управление контентом'
 
     fieldsets = (
@@ -31,21 +31,10 @@ class PageAdmin(XDP17TreeModelAdmin):
         })
     )
 
-    list_display = ['actions_column', 'indented_short_title', 'app_extension']
+    #list_display = ['actions_column', 'indented_short_title', 'app_extension']
     list_filter = ('visible', )
     
-    def drag(self, obj):
-        return '<div class="drag_handle"></div>'
-    
-    drag.allow_tags = True
-        
     form = PageAdminForm
-    
-    # class Media:
-    #     js = [
-    #         '/static/grappelli/tinymce/jscripts/tiny_mce/tiny_mce.js',
-    #         '/static/js/tinymce_setup.js',
-    #     ]
 
 
 class ChunkAdmin(admin.ModelAdmin):

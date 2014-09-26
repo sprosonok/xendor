@@ -12,7 +12,7 @@
 			<form action="/admin/" method="post">
 				{% csrf_token %}
 				<div class="modal-header">
-					<h1>Сайт в разработке</h1>
+					<h1>Сперва авторизуйтесь</h1>
 				</div>
 				<div class="modal-body row">
 					<div class="col-xs-4">
@@ -43,7 +43,7 @@
 					    		</td>
 					    	</tr>
 					    	<tr>
-					    		<td colspan="2" style="vertical-align: bottom; height: 100px;">
+					    		<td colspan="2" style="vertical-align: bottom; height: 80px;">
 					    			<input type="submit" value="Войти" class="btn btn-danger btn-large">
 					    		</td>
 					    	</tr>
@@ -68,17 +68,12 @@
 				margin-top: 50px;
 			}
 			
-			a.thumbnail{
-				border-color: transparent;
-				border-width: 5px;
+			a.thumbnail, a.thumbnail:hover{
+				border: 1px solid white;
 			}
 
 			a.thumbnail img{
 				color: black;
-			}
-			
-			a.thumbnail:hover, a.thumbnail:focus {
-				border-color: #C13A2B;
 			}
 			
 			h1{

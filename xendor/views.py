@@ -24,10 +24,6 @@ class HomeView(TemplateView):
         return context
 
 
-class SiteMapView(TemplateView):
-    template_name = 'sitemap.html'
-
-
 class PageView(DetailView):
     model = Page
     template_name = 'page.html'
