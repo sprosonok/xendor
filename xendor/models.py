@@ -18,12 +18,15 @@ from tinymce.models import HTMLField
 from xendor.utils import generate_slug
 
 slug_re = re.compile(r'^[-a-zA-Z0-9_/]+$')
-validate_slug = RegexValidator(slug_re, _("Enter a valid 'slug' consisting of letters, numbers, underscores or hyphens."), 'invalid')
+validate_slug = RegexValidator(slug_re,
+                               _("Enter a valid 'slug' consisting of letters, numbers, underscores or hyphens."),
+                               'invalid')
 
 # Это нужно для корректной работы south. К слову говоря, по хорошему нужно еще
 # прописать правила, но это на усмотрение того, кому это нужно
 
 add_introspection_rules([], ['^xendor\.models\.XendorSlugField'])
+
 
 class XendorFormSlugField(forms.CharField):
     default_validators = [validate_slug]
@@ -52,35 +55,35 @@ class XendorSlugField(models.CharField):
         defaults.update(kwargs)
         return super(XendorSlugField, self).formfield(**defaults)
 
-class Page(MPTTModel):
 
+class Page(MPTTModel):
     parent = TreeForeignKey(u'self', verbose_name=u'Родитель', null=True, blank=True, related_name=u'children')
 
     title = models.CharField(verbose_name=u"Заголовок", max_length=255, null=False, blank=False)
-    menu_title = models.CharField(u'Заголовок пункта меню', max_length = 255, blank = True, default='')
-    
+    menu_title = models.CharField(u'Заголовок пункта меню', max_length=255, blank=True, default='')
+
     content = HTMLField(u'Текст матетериала', blank=True, null=True)
     visible = models.BooleanField(u'Страница опубликована', default=True)
     in_menu = models.BooleanField(default=True)
     is_main = models.BooleanField(u'Начинать главное меню отсюда', default=False)
-    app_extension = models.CharField(max_length=255, null=False, blank=True, default='')
-    slug = XendorSlugField(u'Синоним страницы', max_length = 255, null=True, unique=True, blank = True)
-    template = models.CharField(u'Заданный шаблон', max_length = 255, blank = True, null=True)
-    
+    app_extension = models.CharField(u'Расширение', max_length=255, null=False, blank=True, default='')
+    slug = XendorSlugField(u'Синоним страницы', max_length=255, null=True, unique=True, blank=True)
+    template = models.CharField(u'Заданный шаблон', max_length=255, blank=True, null=True)
+
     menu_url = models.CharField(u'URL пункта меню',
-        max_length = 255, blank = True, null=True, default='',
-        help_text = u'Переопределяет урл страницы, при непустом значении генерирует 301 редирект')
+                                max_length=255, blank=True, null=True, default='',
+                                help_text=u'Переопределяет урл страницы, при непустом значении генерирует 301 редирект')
 
-    #метатеги
-    meta_title = models.CharField(u'meta-title', max_length = 255, blank = True, null=True, default='')
-    meta_description = models.TextField(u'meta-description', blank = True, null=True, default='')
-    meta_keywords = models.TextField(u'meta-keywords', blank = True, null=True, default='')
+    # метатеги
+    meta_title = models.CharField(u'meta-title', max_length=255, blank=True, null=True, default='')
+    meta_description = models.TextField(u'meta-description', blank=True, null=True, default='')
+    meta_keywords = models.TextField(u'meta-keywords', blank=True, null=True, default='')
 
-    parameters = models.CharField(u'Дополнительные параметры', max_length = 255, blank = True, default='')
+    parameters = models.CharField(u'Дополнительные параметры', max_length=255, blank=True, default='')
 
     class MPTTMeta:
         pass
-        
+
     class Meta:
         verbose_name = u'страница'
         verbose_name_plural = u'Страницы сайта'
@@ -89,9 +92,10 @@ class Page(MPTTModel):
     @models.permalink
     def get_absolute_url(self):
         return ('xendor-page', [self.slug])
-    
+
     def get_app_url(self):
         from xendor.structure import Structure
+
         url = Structure().get_app_url(self.app_extension)
         if not url:
             url = self.get_absolute_url()
@@ -152,23 +156,23 @@ class Page(MPTTModel):
             count_pages = Page.objects.all().count()
             if count_pages == 0:
                 self.is_main = True
-        
+
         if getattr(settings, 'AUTO_CONTENT', False) and getattr(settings, 'DEBUG', False) and not self.content:
             href = 'http://referats.yandex.ru/referats/?t=astronomy+geology+gyroscope+literature+marketing+mathematics+music+polit+agrobiologia+law+psychology+geography+physics+philosophy+chemistry+estetica&s=79610'
-            
+
             html = urllib.urlopen(href).read()
-            
+
             html = html.split('</strong>')[1].split('</div><div class="referats__share">')[0]
-            
+
             self.content = html
-        
+
         super(Page, self).save(force_insert=False, force_update=False, using=None)
 
 
 class Fragment(models.Model):
     """Чанки для вывода небольших моментов"""
 
-    name = models.CharField(u'Название', max_length = 255)
+    name = models.CharField(u'Название', max_length=255)
     content = models.TextField(u'Content')
     is_html = models.BooleanField(u'Использует html?', default=True)
 
@@ -180,11 +184,11 @@ class Fragment(models.Model):
         verbose_name_plural = u'Фрагменты сайта'
 
 
-class Setting (models.Model):
+class Setting(models.Model):
     """Настройки сайта"""
 
-    name = models.CharField (u'Параметр', max_length = 255)
-    value = models.CharField (u'Значение', max_length = 2000)
+    name = models.CharField(u'Параметр', max_length=255)
+    value = models.CharField(u'Значение', max_length=2000)
 
     class Meta:
         verbose_name = u'параметр'

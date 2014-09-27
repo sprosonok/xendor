@@ -13,7 +13,6 @@ except AttributeError:
 
 
 class LanguageValue(object):
-
     def __init__(self, obj, attr):
         self.name = attr
         self.values = {}
@@ -24,7 +23,6 @@ class LanguageValue(object):
         self.default = getattr(obj, attr)
 
     def __unicode__(self):
-
         cur_language = translation.get_language()
         return self.values.get(cur_language, None) or self.default
 

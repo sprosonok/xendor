@@ -3,8 +3,8 @@ from django.contrib import admin
 from django.conf import settings
 
 from xendor.forms import PageAdminForm
-#from xendor.tree_admin import XDP17TreeModelAdmin
 from xendor.models import Page, Fragment, Setting
+from xendor.structure import Structure
 
 
 class PageAdmin(admin.ModelAdmin):
@@ -31,28 +31,35 @@ class PageAdmin(admin.ModelAdmin):
         })
     )
 
-    #list_display = ['actions_column', 'indented_short_title', 'app_extension']
+    list_display = ('title', 'extension', 'lft', 'rght', 'tree_id', 'level')
     list_filter = ('visible', )
-    
+
+    def extension(self, obj):
+        if obj.app_extension:
+            return Structure().apps.get(obj.app_extension).get('app_name')
+
+    extension.allow_tags = True
+    extension.short_description = u'Расширение'
+
     form = PageAdminForm
 
 
 class ChunkAdmin(admin.ModelAdmin):
     """Текстовые блоки (чанки)"""
     admin_label = u'Управление контентом'
-    
+
     list_display = ['__unicode__', 'is_html', 'content']
     list_editable = 'is_html',
-    
+
     def get_form(self, request, obj=None, **kwargs):
         if hasattr(obj, 'id'):
             self.exclude = ['title']
         else:
             self.exclude = []
-              
+
         return super(ChunkAdmin, self).get_form(request, obj, **kwargs)
 
-    
+
 admin.site.register(Page, PageAdmin)
 
 admin.site.register(Fragment)
